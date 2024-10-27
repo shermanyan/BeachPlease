@@ -1,6 +1,8 @@
 package com.example.beachplease;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +22,24 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    public void signupUser(View view) {
+
+        String choice = "signup";
+        Intent intent = new Intent(this, SignUpActivity.class);
+        intent.putExtra("com.example.samplebeachplease.MESSAGE", choice);
+
+        startActivity(intent);
+    }
+
+
+    public void loginUser(View view) {
+
+        String choice = "Login";
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra("com.example.samplebeachplease.MESSAGE", choice);
+
+        startActivity(intent);
     }
 }

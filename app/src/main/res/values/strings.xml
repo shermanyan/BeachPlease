@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BeachPlease</string>
+    <string name="signup">Click here to get Started!</string>
+    <string name="signin">Already have an account?</string>
+    <string name="login">Login</string>
+    <string name="logo_name">Beach Please</string>
+    <string name="slogan">From Waves to Reviews, your SoCal Beach Resouce!</string>
+    <string name="signupprompt">Fill Out Form</string>
 </resources>
