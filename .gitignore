@@ -2,6 +2,7 @@
 .gradle/
 build/
 **/build/
+.gradle/caches/
 !gradle-wrapper.jar
 
 # Local configuration file (sdk path, etc.)
