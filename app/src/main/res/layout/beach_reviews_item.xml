@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/weather_roundedbox"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="10dp">
+
+    <!-- Username -->
+    <TextView
+        android:id="@+id/review_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Liam Carter"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/dark_blue"
+        android:layout_marginEnd="16dp" />
+
+    <!-- Rating Row -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingVertical="5dp">
+
+        <!-- Star Rating -->
+        <RatingBar
+            android:id="@+id/review_star_rating_bar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:numStars="5"
+            android:rating="2.5"
+            android:stepSize="0.1"
+            android:isIndicator="true"
+            android:progressTint="@color/oceanblue" />
+
+        <!-- Review Date -->
+        <TextView
+            android:id="@+id/review_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="July 2024"
+            android:textSize="12sp"
+            android:textColor="@color/dark_gray"
+            android:layout_marginEnd="10dp" />
+    </LinearLayout>
+
+    <!-- Review Text -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/review_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a review of the beach. It was a great experience and I would recommend it to anyone. The water was warm and the sand was soft. The beach was clean and the people were friendly. I will definitely be back again soon. This is a review of the beach. It was a great experience and I would recommend it to anyone. The water was warm and the sand was soft. The beach was clean and the people were friendly. I will definitely be back again soon."
+            android:textSize="16sp"
+            android:maxLines="4"
+            android:ellipsize="end"
+            android:textColor="@color/dark_gray" />
+
+        <TextView
+            android:id="@+id/see_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="See More"
+            android:textSize="14sp"
+            android:textColor="@color/oceanblue"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+</LinearLayout>
