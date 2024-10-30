@@ -208,7 +208,6 @@ public class SignUpActivity extends Activity{
                 Log.e("Database", "Failed to save user info: " + task.getException().getMessage());
             }
         });
-
     }
 
     // method to verify user signup and login

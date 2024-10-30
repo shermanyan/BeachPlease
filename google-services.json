@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "172064172118",
+    "firebase_url": "https://beachplease-439517-default-rtdb.firebaseio.com",
+    "project_id": "beachplease-439517",
+    "storage_bucket": "beachplease-439517.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172064172118:android:830d2fde1a85fdb1d9f3f7",
+        "android_client_info": {
+          "package_name": "com.example.beachplease"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172064172118-241fvrcbltc14h95h41cr26i52o27gle.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.beachplease",
+            "certificate_hash": "c0936938cfbdb92f081ee645c4900b3c0718d209"
+          }
+        },
+        {
+          "client_id": "172064172118-0plrs13s9gpt1grhrinbjvjdtlr560qr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASAkr7HnHVzdOPChZtm2PIMKXQKgd8aZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172064172118-0plrs13s9gpt1grhrinbjvjdtlr560qr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

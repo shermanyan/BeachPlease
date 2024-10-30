@@ -51,6 +51,7 @@ dependencies {
     implementation (libs.play.services.location.v2101)
     implementation (libs.bcrypt)
     implementation (libs.bcrypt)
+    implementation (libs.circleimageview)
 
 
 }
