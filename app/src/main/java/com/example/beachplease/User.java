@@ -7,6 +7,17 @@ public class User {
     private String email;
     private String password;
 
+    // default Constructor
+    public User() {}
+
+    public User(String firstName, String lastName, String userName, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+    }
+
     // Getters and Setters
     public String getFirstName() { return firstName; }
 
