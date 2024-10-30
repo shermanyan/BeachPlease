@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">BeachPlease</string>
-    <string name="signup">Click here to get Started!</string>
+    <string name="signup">Click here to get Started</string>
     <string name="signin">Already have an account?</string>
     <string name="login">Login</string>
     <string name="logo_name">Beach Please</string>
     <string name="slogan">From Waves to Reviews, your SoCal Beach Resouce!</string>
     <string name="signupprompt">Fill Out Form</string>
+    <string name="default_web_client_id">172064172118-qq41a6n8jjvmv78lmi066klkkuhn5t59.apps.googleusercontent.com</string>
+    <string name="message_template">with pass: %1$s and hashed: %2$s</string>
+
 </resources>
