@@ -41,13 +41,16 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-    implementation(libs.play.services.maps)
-    implementation(libs.gridlayout)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation ("com.google.android.gms:play-services-maps:18.0.2")
-    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    implementation(libs.firebase.bom)
+    implementation(libs.com.google.firebase.firebase.analytics)
+    implementation (libs.play.services.maps.v1802)
+    implementation (libs.play.services.location.v2101)
+    implementation (libs.bcrypt)
+    implementation (libs.bcrypt)
+
+
 }

@@ -17,10 +17,12 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDFBoFN_wCM-Gy6m1lQ2Ie_VXySLqgghIc" />
+            android:value="AIzaSyBwdgOrJEi7IZX7mY9v6iqBoQitQu-0G7U" />
+
         <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+            android:name="com.google.android.gms.auth.api.signin.GOOGLE_SIGN_IN_OPTIONS"
+            android:value="@string/default_web_client_id" />
+
 
         <activity
             android:name=".MainActivity"
@@ -42,6 +44,7 @@
 
         <activity android:name=".UserProfileActivity" />
     </application>
+
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

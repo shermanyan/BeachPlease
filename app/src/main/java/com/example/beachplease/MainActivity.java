@@ -35,10 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signupUser(View view) {
-
-        String choice = "signup";
         Intent intent = new Intent(this, SignUpActivity.class);
-        intent.putExtra("com.example.samplebeachplease.MESSAGE", choice);
 
         startActivity(intent);
     }
@@ -46,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void loginUser(View view) {
 
-        String choice = "Login";
         Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra("com.example.samplebeachplease.MESSAGE", choice);
 
         startActivity(intent);
     }

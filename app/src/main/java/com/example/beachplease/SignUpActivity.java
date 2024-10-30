@@ -3,6 +3,7 @@ package com.example.beachplease;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -17,22 +18,42 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import java.util.UUID;
+
+
 
 public class SignUpActivity extends Activity{
 
-    private String firstName;
-    private String lastName;
-    private String userName;
-    private String email;
-    private String password;
-    private String confirmPassword;
+    private String firstName = "";
+    private String lastName = "";
+    private String userName = "";
+    private String email = "";
+    private String password = "";
+    private String hashedPassword ="";
+    private String confirmPassword = "";
     private static final String emailRegex = "^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+    private String userId;
 
     private User user;
+    private PasswordHash passwordHash;
+
+    // Firebase
+    private FirebaseDatabase root;
+    private DatabaseReference reference;
+
+    // Declare FirebaseAuth instance
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.signup);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.signupPage), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -40,12 +61,13 @@ public class SignUpActivity extends Activity{
             return insets;
         });
 
-        Intent intent = getIntent();
-
-        String message = intent.getStringExtra("com.example.samplebeachplease.MESSAGE");
+        user = new User(firstName, lastName, userName, email, password);
+        passwordHash = new PasswordHash();
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
     }
 
-    public static boolean isValidEmail(String email){
+    public boolean isValidEmail(String email){
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
 
@@ -146,20 +168,57 @@ public class SignUpActivity extends Activity{
         }
         user.setEmail(email);
 
-        user.setPassword(password);
+        // Hash password
+        hashedPassword = passwordHash.hashPassword((password));
+
+        user.setPassword(hashedPassword);
     }
 
     public void registerUser(View view) {
 
         boolean isUserInfoValid = validateUser();
 
-        EditText message = findViewById(R.id.success);
+        EditText message = findViewById(R.id.message);
 
         if (!isUserInfoValid) {
             message.setText("Try Again");
         } else {
-            message.setText("Sign Up was successful!");
+
             setupUserInfo();
+            message.setText("Sign Up was successful!");
+            userId = UUID.randomUUID().toString(); // Generate a unique ID
+            storeUserInfoInDatabase(userId);
+
+            openBeachDetailActivity(view);
+
         }
     }
+
+
+    public void storeUserInfoInDatabase(String userId) {
+        root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
+        reference = root.getReference("users");
+
+        reference.child(userId).setValue(user).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Successfully written to database
+                Log.d("Database", "User info saved successfully.");
+            } else {
+                // Failed to write to database
+                Log.e("Database", "Failed to save user info: " + task.getException().getMessage());
+            }
+        });
+
+    }
+
+    // method to verify user signup and login
+    public void openBeachDetailActivity(View view){
+        String id = userId;
+        Intent intent = new Intent(this, BeachDetailActivity.class);
+        intent.putExtra("com.example.beachplease.MESSAGE", id);
+        startActivity(intent);
+    }
+
+
 }
+
