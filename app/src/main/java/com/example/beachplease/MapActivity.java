@@ -156,36 +156,36 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     //Fabricated beach information, substitute with database operation after implemented
     private void initializeBeaches() {
         beaches = new ArrayList<>();
-        beaches.add(new Beach("1", "Sunny Cove Beach", "6 AM - 8 PM", "Sunny", 25.0, 1.2, 34.0123, -118.4956, Arrays.asList("swimming", "sunbathing")));
-        beaches.add(new Beach("2", "Surf Point Beach", "5 AM - 9 PM", "Partly Cloudy", 22.0, 2.5, 34.0114, -118.4979, Arrays.asList("surfing", "picnicking")));
-        beaches.add(new Beach("3", "Ocean Breeze Beach", "7 AM - 7 PM", "Sunny", 28.0, 1.8, 34.0150, -118.4912, Arrays.asList("swimming", "fishing")));
-        beaches.add(new Beach("4", "Rocky Bay Beach", "6 AM - 6 PM", "Cloudy", 20.0, 0.8, 34.0180, -118.4985, Arrays.asList("hiking", "wildlife watching")));
-        beaches.add(new Beach("5", "Crystal Sands", "6 AM - 8 PM", "Clear", 26.0, 1.5, 34.0195, -118.4860, Arrays.asList("boating", "snorkeling")));
-        beaches.add(new Beach("6", "Pelican Point", "5 AM - 10 PM", "Windy", 23.0, 2.0, 34.0205, -118.4902, Arrays.asList("kayaking", "bird watching")));
-        beaches.add(new Beach("7", "Seaside Escape", "6 AM - 9 PM", "Overcast", 21.5, 1.1, 34.0140, -118.4932, Arrays.asList("picnic area", "bbq pits")));
-        beaches.add(new Beach("8", "Adventure Bay", "6 AM - 8 PM", "Foggy", 19.0, 1.6, 34.0210, -118.4948, Arrays.asList("playground", "camping")));
-        beaches.add(new Beach("9", "Coral Cove", "7 AM - 7 PM", "Partly Cloudy", 24.0, 1.9, 34.0165, -118.4899, Arrays.asList("beach volleyball", "dog friendly")));
-        beaches.add(new Beach("10", "Lagoon Beach", "6 AM - 8 PM", "Clear", 27.0, 1.4, 34.0130, -118.4915, Arrays.asList("windsurfing", "diving")));
-        beaches.add(new Beach("11", "Golden Sands Beach", "5 AM - 9 PM", "Sunny", 30.0, 2.0, 34.0220, -118.5020, Arrays.asList("swimming", "sunbathing")));
-        beaches.add(new Beach("12", "Moonlight Bay", "6 AM - 8 PM", "Partly Cloudy", 25.0, 1.7, 34.0255, -118.5056, Arrays.asList("surfing", "fishing")));
-        beaches.add(new Beach("13", "Ocean Breeze", "7 AM - 6 PM", "Windy", 20.0, 1.3, 34.0195, -118.5092, Arrays.asList("hiking", "wildlife watching")));
-        beaches.add(new Beach("14", "Paradise Point", "6 AM - 9 PM", "Clear", 28.0, 2.5, 34.0234, -118.4923, Arrays.asList("boating", "snorkeling")));
-        beaches.add(new Beach("15", "Pelican Shores", "5 AM - 10 PM", "Cloudy", 23.0, 1.8, 34.0270, -118.4884, Arrays.asList("kayaking", "bird watching")));
-        beaches.add(new Beach("16", "Shoreline Park Beach", "6 AM - 7 PM", "Foggy", 18.5, 1.5, 34.0305, -118.4956, Arrays.asList("picnic area", "bbq pits")));
-        beaches.add(new Beach("17", "Dolphin Cove", "5 AM - 8 PM", "Sunny", 27.0, 2.2, 34.0310, -118.4895, Arrays.asList("swimming", "boating")));
-        beaches.add(new Beach("18", "Coral Beach", "6 AM - 8 PM", "Windy", 21.5, 1.9, 34.0350, -118.4820, Arrays.asList("diving", "dog friendly")));
-        beaches.add(new Beach("19", "Sandpiper Beach", "7 AM - 7 PM", "Clear", 26.5, 2.0, 34.0378, -118.4782, Arrays.asList("surfing", "kayaking")));
-        beaches.add(new Beach("20", "Blue Horizon Beach", "6 AM - 8 PM", "Partly Cloudy", 24.5, 1.6, 34.0420, -118.4750, Arrays.asList("windsurfing", "beach volleyball")));
-        beaches.add(new Beach("21", "Laguna Beach", "5 AM - 9 PM", "Overcast", 22.0, 1.3, 34.0455, -118.4706, Arrays.asList("swimming", "sunbathing")));
-        beaches.add(new Beach("22", "Emerald Bay Beach", "6 AM - 8 PM", "Clear", 29.0, 2.7, 34.0490, -118.4650, Arrays.asList("boating", "camping")));
-        beaches.add(new Beach("23", "Sunset Shores", "6 AM - 8 PM", "Sunny", 25.5, 2.3, 34.0532, -118.4601, Arrays.asList("diving", "rock climbing")));
-        beaches.add(new Beach("24", "High Tide Beach", "7 AM - 9 PM", "Windy", 23.0, 1.8, 34.0555, -118.4565, Arrays.asList("fishing", "picnicking")));
-        beaches.add(new Beach("25", "Driftwood Beach", "5 AM - 10 PM", "Clear", 20.0, 1.9, 34.0585, -118.4530, Arrays.asList("snorkeling", "kayaking")));
-        beaches.add(new Beach("26", "Seabreeze Beach", "6 AM - 7 PM", "Partly Cloudy", 24.0, 2.1, 34.0610, -118.4495, Arrays.asList("bird watching", "hiking")));
-        beaches.add(new Beach("27", "Starfish Cove", "6 AM - 8 PM", "Cloudy", 26.0, 2.5, 34.0650, -118.4440, Arrays.asList("camping", "playground")));
-        beaches.add(new Beach("28", "Seaside Haven", "7 AM - 9 PM", "Sunny", 28.0, 2.2, 34.0695, -118.4405, Arrays.asList("beach volleyball", "dog friendly")));
-        beaches.add(new Beach("29", "Whale Watch Beach", "5 AM - 8 PM", "Overcast", 19.5, 1.4, 34.0730, -118.4370, Arrays.asList("snorkeling", "sunbathing")));
-        beaches.add(new Beach("30", "Coastal Haven", "6 AM - 8 PM", "Clear", 27.5, 2.8, 34.0770, -118.4325, Arrays.asList("kayaking", "windsurfing")));
+        beaches.add(new Beach("1", "Sunny Cove Beach", 34.0123, -118.4956, Arrays.asList("swimming", "sunbathing")));
+        beaches.add(new Beach("2", "Surf Point Beach", 34.0114, -118.4979, Arrays.asList("surfing", "picnicking")));
+        beaches.add(new Beach("3", "Ocean Breeze Beach", 34.0150, -118.4912, Arrays.asList("swimming", "fishing")));
+        beaches.add(new Beach("4", "Rocky Bay Beach", 34.0180, -118.4985, Arrays.asList("hiking", "wildlife watching")));
+        beaches.add(new Beach("5", "Crystal Sands", 34.0195, -118.4860, Arrays.asList("boating", "snorkeling")));
+        beaches.add(new Beach("6", "Pelican Point", 34.0205, -118.4902, Arrays.asList("kayaking", "bird watching")));
+        beaches.add(new Beach("7", "Seaside Escape", 34.0140, -118.4932, Arrays.asList("picnic area", "bbq pits")));
+        beaches.add(new Beach("8", "Adventure Bay", 34.0210, -118.4948, Arrays.asList("playground", "camping")));
+        beaches.add(new Beach("9", "Coral Cove", 34.0165, -118.4899, Arrays.asList("beach volleyball", "dog friendly")));
+        beaches.add(new Beach("10", "Lagoon Beach", 34.0130, -118.4915, Arrays.asList("windsurfing", "diving")));
+        beaches.add(new Beach("11", "Golden Sands Beach", 34.0220, -118.5020, Arrays.asList("swimming", "sunbathing")));
+        beaches.add(new Beach("12", "Moonlight Bay", 34.0255, -118.5056, Arrays.asList("surfing", "fishing")));
+        beaches.add(new Beach("13", "Ocean Breeze", 34.0195, -118.5092, Arrays.asList("hiking", "wildlife watching")));
+        beaches.add(new Beach("14", "Paradise Point", 34.0234, -118.4923, Arrays.asList("boating", "snorkeling")));
+        beaches.add(new Beach("15", "Pelican Shores", 34.0270, -118.4884, Arrays.asList("kayaking", "bird watching")));
+        beaches.add(new Beach("16", "Shoreline Park Beach", 34.0305, -118.4956, Arrays.asList("picnic area", "bbq pits")));
+        beaches.add(new Beach("17", "Dolphin Cove", 34.0310, -118.4895, Arrays.asList("swimming", "boating")));
+        beaches.add(new Beach("18", "Coral Beach", 34.0350, -118.4820, Arrays.asList("diving", "dog friendly")));
+        beaches.add(new Beach("19", "Sandpiper Beach", 34.0378, -118.4782, Arrays.asList("surfing", "kayaking")));
+        beaches.add(new Beach("20", "Blue Horizon Beach", 34.0420, -118.4750, Arrays.asList("windsurfing", "beach volleyball")));
+        beaches.add(new Beach("21", "Laguna Beach", 34.0455, -118.4706, Arrays.asList("swimming", "sunbathing")));
+        beaches.add(new Beach("22", "Emerald Bay Beach", 34.0490, -118.4650, Arrays.asList("boating", "camping")));
+        beaches.add(new Beach("23", "Sunset Shores", 34.0532, -118.4601, Arrays.asList("diving", "rock climbing")));
+        beaches.add(new Beach("24", "High Tide Beach", 34.0555, -118.4565, Arrays.asList("fishing", "picnicking")));
+        beaches.add(new Beach("25", "Driftwood Beach", 34.0585, -118.4530, Arrays.asList("snorkeling", "kayaking")));
+        beaches.add(new Beach("26", "Seabreeze Beach", 34.0610, -118.4495, Arrays.asList("bird watching", "hiking")));
+        beaches.add(new Beach("27", "Starfish Cove", 34.0650, -118.4440, Arrays.asList("camping", "playground")));
+        beaches.add(new Beach("28", "Seaside Haven", 34.0695, -118.4405, Arrays.asList("beach volleyball", "dog friendly")));
+        beaches.add(new Beach("29", "Whale Watch Beach", 34.0730, -118.4370, Arrays.asList("snorkeling", "sunbathing")));
+        beaches.add(new Beach("30", "Coastal Haven", 34.0770, -118.4325, Arrays.asList("kayaking", "windsurfing")));
 
     }
 
@@ -239,7 +239,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private boolean onMarkerClick(Marker marker) {
         Beach selectedBeach = (Beach) marker.getTag();
         Intent intent = new Intent(MapActivity.this, BeachDetailActivity.class);
-        intent.putExtra("beach_name", selectedBeach != null ? selectedBeach.getName() : "Unknown Beach");
+        intent.putExtra("beach", selectedBeach);
         startActivity(intent);
         return true;
     }

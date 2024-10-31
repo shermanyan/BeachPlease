@@ -88,11 +88,14 @@ public class WeatherView extends LinearLayout {
     private Tab activeTab = Tab.TEMPERATURE;
     private Calendar calendar;
 
+    private Beach beach;
 
-    public WeatherView(Context context, Location location) {
+    public WeatherView(Context context, Beach beach) {
         super(context);
 
         calendar = Calendar.getInstance();
+
+        this.beach = beach;
 
         weatherData = new WeatherData();
         createView(context);
