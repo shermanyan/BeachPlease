@@ -15,8 +15,7 @@ public class BeachDetailActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private FirebaseDatabase root;
 
-    private Location location;
-    private String locationName;
+    private Beach beach;
     private WeatherView weatherView;
     private ReviewView reviewView; // Update to use ReviewView
 
@@ -24,8 +23,6 @@ public class BeachDetailActivity extends AppCompatActivity {
     private TextView beachRating;
     private RatingBar starRatingBar;
     private TextView numRatings;
-
-    private LinearLayout mainContainer;
 
     private TextView reviewsTab;
     private TextView weatherTab;
@@ -40,15 +37,13 @@ public class BeachDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beach_detail);
 
+        beach = getIntent().getParcelableExtra("beach");
+
         root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
         reference = root.getReference("users");
 
-        // replace with intent later
-        location = new Location(100.0f, 100.0f);
-        locationName = "Dockwieler Beach";
-
         // Initialize views
-        mainContainer = findViewById(R.id.beach_view);
+        LinearLayout mainContainer = findViewById(R.id.beach_view);
         beachTitle = findViewById(R.id.beach_title);
         beachRating = findViewById(R.id.beach_rating);
         starRatingBar = findViewById(R.id.star_rating_bar);
@@ -67,9 +62,9 @@ public class BeachDetailActivity extends AppCompatActivity {
         mainContainer.addView(reviewView);
 
         // Initialize WeatherView
-        weatherView = new WeatherView(mainContainer.getContext(), location);
+        weatherView = new WeatherView(mainContainer.getContext(), beach);
         mainContainer.addView(weatherView);
-
+        weatherView.setVisibility(View.GONE);
 
         retrieveBeachDetails();
     }
@@ -100,7 +95,7 @@ public class BeachDetailActivity extends AppCompatActivity {
 
     private void retrieveBeachDetails() {
         // Set beach details dynamically, fetch these from a server or database
-        beachTitle.setText(locationName);
+        beachTitle.setText(beach.getName());
 
         beachRating.setText("4.5");
         starRatingBar.setRating(4.5f);
