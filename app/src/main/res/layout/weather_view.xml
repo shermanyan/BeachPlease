@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="20dp"
-    android:id="@+id/beach_weather_item"
+    android:id="@+id/weather_view"
     >
     <!-- Current Weather Section -->
 
@@ -168,20 +167,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="8dp"
-            android:background="@color/gray" />
 
-        <TextView
-            android:id="@+id/tab_pre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wind"
-            android:textColor="@color/dark_gray"
-            android:textSize="16sp"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Temperature Graph (Placeholder) -->
@@ -202,58 +188,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/forecast_container"
             >
-            <!-- Include Weather Item for each day -->
-            <include
-                layout="@layout/weather_condition_item"
-                android:id="@+id/weather_item_day1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp"
-                />
 
-            <include
-                layout="@layout/weather_condition_item"
-                android:id="@+id/weather_item_day2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp" />
-
-            <include
-                layout="@layout/weather_condition_item"
-                android:id="@+id/weather_item_day3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp" />
-
-            <include
-                layout="@layout/weather_condition_item"
-                android:id="@+id/weather_item_day4"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp" />
-
-            <include
-                layout="@layout/weather_condition_item"
-                android:id="@+id/weather_item_day5"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp" />
-
-            <include
-                layout="@layout/weather_condition_item"
-                android:id="@+id/weather_item_day6"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp" />
-
-            <include
-                layout="@layout/weather_condition_item"
-                android:id="@+id/weather_item_day7"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp" />
+<!--            <include-->
+<!--                layout="@layout/forecast_item"-->
+<!--                android:id="@+id/weather_item_day1"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_marginEnd="5dp"-->
+<!--                />-->
 
         </LinearLayout>
+
     </HorizontalScrollView>
 </LinearLayout>
