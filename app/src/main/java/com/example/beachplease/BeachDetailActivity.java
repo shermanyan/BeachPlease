@@ -1,14 +1,16 @@
 package com.example.beachplease;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import com.google.firebase.database.FirebaseDatabase;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class BeachDetailActivity extends AppCompatActivity {
 
@@ -16,21 +18,19 @@ public class BeachDetailActivity extends AppCompatActivity {
     private FirebaseDatabase root;
 
     private Beach beach;
+
     private WeatherView weatherView;
     private ReviewView reviewView; // Update to use ReviewView
+    private OverviewView overviewView; // Update to use ReviewView
 
     private TextView beachTitle;
     private TextView beachRating;
     private RatingBar starRatingBar;
     private TextView numRatings;
 
+    private TextView overviewTab;
     private TextView reviewsTab;
     private TextView weatherTab;
-
-    private enum Tab {
-        REVIEWS,
-        WEATHER
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +50,25 @@ public class BeachDetailActivity extends AppCompatActivity {
         numRatings = findViewById(R.id.num_ratings);
 
         // Tabs
+        overviewTab = findViewById(R.id.tab_overview);
         reviewsTab = findViewById(R.id.tab_reviews);
         weatherTab = findViewById(R.id.tab_weather);
 
+        overviewTab.setOnClickListener(this::switchTabs);
         reviewsTab.setOnClickListener(this::switchTabs);
         weatherTab.setOnClickListener(this::switchTabs);
 
+        // Initialize OverviewTab
+
+
+        overviewView = new OverviewView(mainContainer.getContext());
+        mainContainer.addView(overviewView);
+        overviewView.setVisibility(View.VISIBLE);
 
         // Initialize ReviewView
         reviewView = new ReviewView(mainContainer.getContext());
         mainContainer.addView(reviewView);
+        reviewView.setVisibility(View.GONE);
 
         // Initialize WeatherView
         weatherView = new WeatherView(mainContainer.getContext(), beach);
@@ -71,26 +80,48 @@ public class BeachDetailActivity extends AppCompatActivity {
 
     private void switchTabs(View view) {
         Tab tab;
-        if (view.getId() == R.id.tab_reviews) {
+        int id = view.getId();
+
+        if (id == R.id.tab_reviews) {
             tab = Tab.REVIEWS;
-        } else {
+        } else if (id == R.id.tab_weather) {
             tab = Tab.WEATHER;
+        } else {
+            tab = Tab.OVERVIEW;
         }
 
         switch (tab) {
+            case OVERVIEW:
+                overviewTab.setTextColor(ContextCompat.getColor(this, R.color.oceanblue));
+                reviewsTab.setTextColor(ContextCompat.getColor(this, R.color.dark_gray));
+                weatherTab.setTextColor(ContextCompat.getColor(this, R.color.dark_gray));
+                overviewView.setVisibility(View.VISIBLE);
+                reviewView.setVisibility(View.GONE);
+                weatherView.setVisibility(View.GONE);
+                break;
             case REVIEWS:
+                overviewTab.setTextColor(ContextCompat.getColor(this, R.color.dark_gray));
                 reviewsTab.setTextColor(ContextCompat.getColor(this, R.color.oceanblue));
                 weatherTab.setTextColor(ContextCompat.getColor(this, R.color.dark_gray));
+                overviewView.setVisibility(View.GONE);
                 reviewView.setVisibility(View.VISIBLE);
                 weatherView.setVisibility(View.GONE);
                 break;
             case WEATHER:
+                overviewTab.setTextColor(ContextCompat.getColor(this, R.color.dark_gray));
                 reviewsTab.setTextColor(ContextCompat.getColor(this, R.color.dark_gray));
                 weatherTab.setTextColor(ContextCompat.getColor(this, R.color.oceanblue));
+                overviewView.setVisibility(View.GONE);
                 reviewView.setVisibility(View.GONE);
                 weatherView.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    private enum Tab {
+        OVERVIEW,
+        REVIEWS,
+        WEATHER
     }
 
     private void retrieveBeachDetails() {

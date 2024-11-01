@@ -3,7 +3,6 @@ package com.example.beachplease;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -81,14 +80,14 @@ public class WeatherView extends LinearLayout {
 
     private final WeatherData weatherData;
 
-    private TextView temperatureTab;
-    private TextView waveHeightTab;
+    private final TextView temperatureTab;
+    private final TextView waveHeightTab;
     private View graph;
 
     private Tab activeTab = Tab.TEMPERATURE;
-    private Calendar calendar;
+    private final Calendar calendar;
 
-    private Beach beach;
+    private final Beach beach;
 
     public WeatherView(Context context, Beach beach) {
         super(context);
@@ -194,12 +193,12 @@ public class WeatherView extends LinearLayout {
 
         switch (tab) {
             case TEMPERATURE:
-                temperatureTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.oceanblue));
+                temperatureTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.dark_blue));
                 waveHeightTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.dark_gray));
                 break;
             case WAVE_HEIGHT:
                 temperatureTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.dark_gray));
-                waveHeightTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.oceanblue));
+                waveHeightTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.dark_blue));
                 break;
         }
 

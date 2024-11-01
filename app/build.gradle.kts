@@ -45,7 +45,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(libs.firebase.bom)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.com.google.firebase.firebase.analytics)
     implementation (libs.play.services.maps.v1802)
     implementation (libs.play.services.location.v2101)
@@ -53,5 +53,6 @@ dependencies {
     implementation (libs.bcrypt)
     implementation (libs.circleimageview)
 
+    implementation(libs.google.flexbox)
 
 }

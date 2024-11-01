@@ -76,11 +76,21 @@
             android:paddingBottom="2dp">
 
             <TextView
+                android:id="@+id/tab_overview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:text="Overview"
+                android:textColor="@color/oceanblue"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/tab_reviews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reviews"
-                android:textColor="@color/oceanblue"
+                android:textColor="@color/dark_gray"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginEnd="20dp" />
