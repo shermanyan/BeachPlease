@@ -42,6 +42,8 @@
 
         <activity android:name=".BeachDetailActivity" />
 
+        <activity android:name=".AddReviewActivity" />
+
         <activity android:name=".UserProfileActivity" />
     </application>
 

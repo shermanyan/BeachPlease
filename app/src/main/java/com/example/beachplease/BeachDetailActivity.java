@@ -1,6 +1,8 @@
 package com.example.beachplease;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -27,6 +29,7 @@ public class BeachDetailActivity extends AppCompatActivity {
     private TextView beachRating;
     private RatingBar starRatingBar;
     private TextView numRatings;
+    private View writeReviewButton;
 
     private TextView overviewTab;
     private TextView reviewsTab;
@@ -65,6 +68,15 @@ public class BeachDetailActivity extends AppCompatActivity {
         mainContainer.addView(overviewView);
         overviewView.setVisibility(View.VISIBLE);
 
+        // Initialize Add review button
+        writeReviewButton = LayoutInflater.from(mainContainer.getContext()).inflate(R.layout.add_review_button, mainContainer, false);
+        mainContainer.addView(writeReviewButton);
+        findViewById(R.id.write_review_button).setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddReviewActivity.class);
+            startActivity(intent);
+        });
+        writeReviewButton.setVisibility(View.GONE);
+
         // Initialize ReviewView
         reviewView = new ReviewView(mainContainer.getContext());
         mainContainer.addView(reviewView);
@@ -98,6 +110,7 @@ public class BeachDetailActivity extends AppCompatActivity {
                 overviewView.setVisibility(View.VISIBLE);
                 reviewView.setVisibility(View.GONE);
                 weatherView.setVisibility(View.GONE);
+                writeReviewButton.setVisibility(View.GONE);
                 break;
             case REVIEWS:
                 overviewTab.setTextColor(ContextCompat.getColor(this, R.color.dark_gray));
@@ -106,6 +119,7 @@ public class BeachDetailActivity extends AppCompatActivity {
                 overviewView.setVisibility(View.GONE);
                 reviewView.setVisibility(View.VISIBLE);
                 weatherView.setVisibility(View.GONE);
+                writeReviewButton.setVisibility(View.VISIBLE);
                 break;
             case WEATHER:
                 overviewTab.setTextColor(ContextCompat.getColor(this, R.color.dark_gray));
@@ -114,6 +128,7 @@ public class BeachDetailActivity extends AppCompatActivity {
                 overviewView.setVisibility(View.GONE);
                 reviewView.setVisibility(View.GONE);
                 weatherView.setVisibility(View.VISIBLE);
+                writeReviewButton.setVisibility(View.GONE);
                 break;
         }
     }
