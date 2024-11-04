@@ -63,7 +63,6 @@ public class BeachDetailActivity extends AppCompatActivity {
 
         // Initialize OverviewTab
 
-
         overviewView = new OverviewView(mainContainer.getContext());
         mainContainer.addView(overviewView);
         overviewView.setVisibility(View.VISIBLE);
@@ -71,7 +70,7 @@ public class BeachDetailActivity extends AppCompatActivity {
         // Initialize Add review button
         writeReviewButton = LayoutInflater.from(mainContainer.getContext()).inflate(R.layout.add_review_button, mainContainer, false);
         mainContainer.addView(writeReviewButton);
-        findViewById(R.id.write_review_button).setOnClickListener(v -> {
+        writeReviewButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddReviewActivity.class);
             startActivity(intent);
         });
@@ -140,9 +139,10 @@ public class BeachDetailActivity extends AppCompatActivity {
     }
 
     private void retrieveBeachDetails() {
-        // Set beach details dynamically, fetch these from a server or database
+        // TODO - Set beach details dynamically, fetch these from a server or database
         beachTitle.setText(beach.getName());
 
+        // TODO - Fetch beach rating and number of ratings from a server or database
         beachRating.setText("4.5");
         starRatingBar.setRating(4.5f);
         numRatings.setText("(11,241)");
@@ -159,4 +159,5 @@ public class BeachDetailActivity extends AppCompatActivity {
         reviewView.addReview("Chris Evans", "Very clean beach, but parking can be a hassle. Arrive early to find a spot. The water is clear. Good for swimming. Nice walking paths. Plenty of seating. Friendly locals. Good for families. Lots of activities. Worth a visit!", "July 2024", 3.0f);
         reviewView.addReview("Jessica White", "Amazing beach volleyball courts and fun activities! The beach is clean. Good for groups. Plenty of space. Friendly atmosphere. Lots of amenities. Easy access. Great for sports. Beautiful views. Highly recommend!", "August 2024", 4.8f);
         reviewView.addReview("David Smith", "A hidden gem! Perfect for a quiet day by the water. The beach is clean. Not too crowded. Good for relaxation. Nice walking paths. Plenty of seating. Friendly locals. Good for families. Beautiful scenery. Will visit again!", "July 2024", 5.0f);    }
+
 }
