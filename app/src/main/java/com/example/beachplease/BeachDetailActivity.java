@@ -23,6 +23,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 public class BeachDetailActivity extends AppCompatActivity {
 
     private DatabaseReference reference;
@@ -43,6 +45,9 @@ public class BeachDetailActivity extends AppCompatActivity {
     private TextView overviewTab;
     private TextView reviewsTab;
     private TextView weatherTab;
+
+    //variable caching names to resolve name-not-shown-in-reviews problem
+    private HashMap<String, String> userNameCache = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +154,7 @@ public class BeachDetailActivity extends AppCompatActivity {
     }
 
     private void retrieveBeachDetails() {
-        // Set beach details dynamically, fetch these from a server or database
+//        Set beach details dynamically, fetch these from a server or database
 //        beachTitle.setText(beach.getName());
 //
 //        beachRating.setText("4.5");
@@ -157,7 +162,7 @@ public class BeachDetailActivity extends AppCompatActivity {
 //        numRatings.setText("(11,241)");
 //
 //        // Dynamically add reviews using ReviewView
-//        // TODO - Fetch reviews from a server or database
+//        // Fetch reviews from a server or database
 //        reviewView.addReview("John Doe", "Great beach with warm water! The sand is soft and clean. The facilities are well-maintained. Lifeguards are attentive. Plenty of space to relax. Water activities available. Family-friendly environment. Beautiful scenery. Easy access to parking. Highly recommend!", "July 2024", 4.0f);
 //        reviewView.addReview("Jane Smith", "Had a fantastic time! The beach was not too crowded. The weather was perfect. The water was clear and refreshing. Lots of food options nearby. Friendly locals. Safe for kids. Clean restrooms. Great for a day trip. Will visit again!", "August 2024", 5.0f);
 //        reviewView.addReview("Alice Johnson", "The sunsets here are breathtaking! Perfect spot for evening walks. The beach is very clean. Quiet and peaceful atmosphere. Ideal for photography. Plenty of seating areas. Good for picnics. Nice breeze. Romantic setting. A must-visit!", "June 2024", 5.0f);
@@ -170,7 +175,7 @@ public class BeachDetailActivity extends AppCompatActivity {
 //        reviewView.addReview("David Smith", "A hidden gem! Perfect for a quiet day by the water. The beach is clean. Not too crowded. Good for relaxation. Nice walking paths. Plenty of seating. Friendly locals. Good for families. Beautiful scenery. Will visit again!", "July 2024", 5.0f);
 
         beachTitle.setText(beach.getName());
-        DatabaseReference reviewsRef = root.getReference("reviewes");
+        DatabaseReference reviewsRef = root.getReference("reviews");
 
         reviewsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -178,7 +183,6 @@ public class BeachDetailActivity extends AppCompatActivity {
                 float totalRating = 0f;
                 int reviewCount = 0;
 
-                //iterate reviews
                 for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
                     String userId = reviewSnapshot.child("userId").getValue(String.class);
                     String beachId = reviewSnapshot.child("beachId").getValue(String.class);
@@ -188,23 +192,31 @@ public class BeachDetailActivity extends AppCompatActivity {
 
                     //check if review match beach
                     if (beachId != null && beachId.equals(beach.getId()) && stars != null) {
-                        //get user full name
-                        String userName = fetchUserName(userId);
-                        reviewView.addReview(userName, reviewText, date, stars);
+                        //find user name in cache
+                        if (userNameCache.containsKey(userId)) {
+                            String userName = userNameCache.get(userId);
+                            reviewView.addReview(userName, reviewText, date, stars);
+                        } else {
+                            //get user name if not in cache from firebase
+                            fetchUserName(userId, (userName) -> {
+                                reviewView.addReview(userName, reviewText, date, stars);
+                                userNameCache.put(userId, userName); // Cache the fetched name
+                                Log.d("BeachDetailActivity", "User full name: "+userName);
+                            });
+                        }
 
                         totalRating += stars;
                         reviewCount++;
                     }
                 }
 
-                //average rating
+                //rating average
                 if (reviewCount > 0) {
-                    float averageRating = totalRating / reviewCount;
+                    float averageRating = totalRating/reviewCount;
                     beachRating.setText(String.format("%.1f", averageRating));
                     starRatingBar.setRating(averageRating);
                     numRatings.setText("(" + reviewCount + ")");
                 } else {
-                    //default setting
                     beachRating.setText("No Ratings");
                     starRatingBar.setRating(0f);
                     numRatings.setText("(0)");
@@ -220,8 +232,13 @@ public class BeachDetailActivity extends AppCompatActivity {
         });
     }
 
-    private String fetchUserName(String userId) {
-        final String[] userName = {""};
+    //callback user name interface
+    interface UserNameCallback {
+        void onUserNameFetched(String userName);
+    }
+
+    //callback get user name from firebase
+    private void fetchUserName(String userId, UserNameCallback callback) {
         DatabaseReference userRef = root.getReference("users").child(userId);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -229,15 +246,16 @@ public class BeachDetailActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String firstName = dataSnapshot.child("firstName").getValue(String.class);
                 String lastName = dataSnapshot.child("lastName").getValue(String.class);
-                userName[0] = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
-                Log.d("BeachDetailActivity", "Name added "+userName[0]);
+                String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+
+                callback.onUserNameFetched(fullName.trim());
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("BeachDetailActivity", "Failed to load user name", databaseError.toException());
+                callback.onUserNameFetched("Unknown User");
             }
         });
-        return userName[0];
     }
 }
