@@ -68,6 +68,7 @@ import java.util.List;
 import java.util.Locale;
 import android.widget.TextView;
 import android.view.View;
+import android.os.Handler;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -375,6 +376,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     //Tag filter functionality
     private void filterBeachesByTags() {
+        mMap.clear();
+
         if (selectedTags.isEmpty()) {
             displayNearestBeaches(5);
             return;
@@ -389,8 +392,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         if (filteredBeaches.isEmpty()) {
             Toast.makeText(this, "No beaches match the selected tags.", Toast.LENGTH_SHORT).show();
-            mMap.clear();
+            //Force refresh
+            Marker dummyMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)));
+            dummyMarker.remove();
+
+            //delay and clear
+            new Handler(Looper.getMainLooper()).postDelayed(() -> mMap.clear(), 100);
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(CALIFORNIA_BOUNDS, 100));
+            mMap.clear();
         } else {
             displayBeaches(filteredBeaches);
             adjustMapZoom(filteredBeaches.size() > 5 ? filteredBeaches.subList(0, 5) : filteredBeaches);
