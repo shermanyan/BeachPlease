@@ -73,7 +73,7 @@ public class BeachDetailActivity extends AppCompatActivity {
         // Initialize OverviewTab
 
 
-        overviewView = new OverviewView(mainContainer.getContext());
+        overviewView = new OverviewView(mainContainer.getContext(), beach.getId());
         mainContainer.addView(overviewView);
         overviewView.setVisibility(View.VISIBLE);
 

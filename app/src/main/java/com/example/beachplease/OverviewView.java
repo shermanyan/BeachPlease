@@ -17,6 +17,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
+
+
 public class OverviewView extends LinearLayout {
 
     private static final List<String> TAGS = Arrays.asList(
@@ -27,10 +41,13 @@ public class OverviewView extends LinearLayout {
     );
 
     private FlexboxLayout tagContainer;
+    private DatabaseReference beachRef;
+    private String beachId;
     private List<TextView> tags;
 
-    public OverviewView(Context context) {
+    public OverviewView(Context context, String beachId) {
         super(context);
+        this.beachId = beachId;
         init(context);
     }
 
@@ -38,6 +55,11 @@ public class OverviewView extends LinearLayout {
         // Inflate the layout for the overview view
         LayoutInflater.from(context).inflate(R.layout.overview_view, this, true);
         tagContainer = findViewById(R.id.tag_container);
+
+        //reference to the beach tagNumber in database
+        beachRef = FirebaseDatabase.getInstance()
+                .getReference("beaches")
+                .child(beachId);
 
         findViewById(R.id.address_container).setOnLongClickListener(v -> {
             TextView addressTextView = findViewById(R.id.beach_address); // Assuming address_text is the TextView ID
@@ -71,23 +93,57 @@ public class OverviewView extends LinearLayout {
 
             tagName.setText(tag);
 
-            int tagCount = getTagCounter(tag);
-            updateTag(tagItem, tagCounter, tagCount);
-
-            tagItem.setOnClickListener(v -> {
-                int count = Integer.parseInt(tagCounter.getText().toString());
-                count++;
-                updateTag(tagItem, tagCounter, count);
+            //get tag count
+            beachRef.child("tagNumber").child(tag).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult().getValue() != null) {
+                    int tagCount = task.getResult().getValue(Integer.class);
+                    updateTag(tagItem, tagCounter, tagCount);
+                } else {
+                    updateTag(tagItem, tagCounter, 0);
+                }
             });
 
+            //click to increase number
+            tagItem.setOnClickListener(v -> {
+                int count = Integer.parseInt(tagCounter.getText().toString())+1;
+                updateTag(tagItem, tagCounter, count);
+
+                //database update
+                beachRef.child("tagNumber").child(tag).setValue(count);
+                updateTopTags();
+            });
+
+            //long click to decrease number
             tagItem.setOnLongClickListener(v -> {
                 int count = Integer.parseInt(tagCounter.getText().toString());
                 if (count > 0) {
                     count--;
                     updateTag(tagItem, tagCounter, count);
+
+                    //database update
+                    beachRef.child("tagNumber").child(tag).setValue(count);
+                    updateTopTags();
                 }
                 return true;
             });
+
+//            int tagCount = getTagCounter(tag);
+//            updateTag(tagItem, tagCounter, tagCount);
+//
+//            tagItem.setOnClickListener(v -> {
+//                int count = Integer.parseInt(tagCounter.getText().toString());
+//                count++;
+//                updateTag(tagItem, tagCounter, count);
+//            });
+//
+//            tagItem.setOnLongClickListener(v -> {
+//                int count = Integer.parseInt(tagCounter.getText().toString());
+//                if (count > 0) {
+//                    count--;
+//                    updateTag(tagItem, tagCounter, count);
+//                }
+//                return true;
+//            });
 
             tagContainer.addView(tagItem);
         }
@@ -102,16 +158,45 @@ public class OverviewView extends LinearLayout {
         } else {
             tagName.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.tag_roundedbox));
         }
-        // TODO: Update count in the database
+        // Update count in the database
     }
 
     private int getTagCounter(String tag) {
-        // TODO: Retrieve count from the database
+        // Retrieve count from the database
 
         Random random = new Random(); // Random object to generate random numbers
 
         int count = random.nextInt(5); // Generates a number from 1 to 10
 
         return count;
+    }
+
+    //to update tags representing the beaches based on tag numbers
+    private void updateTopTags() {
+        beachRef.child("tagNumber").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                //tag count get
+                HashMap<String, Integer> tagCounts = new HashMap<>();
+                for (DataSnapshot snapshot : task.getResult().getChildren()) {
+                    String tag = snapshot.getKey();
+                    Integer count = snapshot.getValue(Integer.class);
+                    if (tag != null && count != null) {
+                        tagCounts.put(tag, count);
+                    }
+                }
+
+                //two tags with highest number for the beach
+                List<Map.Entry<String, Integer>> sortedTags = new ArrayList<>(tagCounts.entrySet());
+                sortedTags.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+                List<String> topTags = new ArrayList<>();
+                for (int i = 0; i < Math.min(2, sortedTags.size()); i++) {
+                    topTags.add(sortedTags.get(i).getKey());
+                }
+
+                //database update for tags property
+                beachRef.child("tags").setValue(topTags);
+            }
+        });
     }
 }
