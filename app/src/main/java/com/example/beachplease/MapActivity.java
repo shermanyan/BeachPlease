@@ -306,13 +306,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void displayBeaches(List<Beach> beachesToDisplay) {
         mMap.clear();
-        for (Beach beach : beachesToDisplay) {
-            Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(beach.getLatitude(), beach.getLongitude()))
-                    .title(beach.getName()));
-            marker.setTag(beach);
-        }
-        mMap.setOnMarkerClickListener(this::onMarkerClick);
+        //Force refresh
+        Marker dummyMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)));
+        dummyMarker.remove();
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            for (Beach beach : beachesToDisplay) {
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(beach.getLatitude(), beach.getLongitude()))
+                        .title(beach.getName()));
+                marker.setTag(beach);
+            }
+            mMap.setOnMarkerClickListener(this::onMarkerClick);
+        }, 100);
     }
 
     //Adjust zoom based on nearest beaches
