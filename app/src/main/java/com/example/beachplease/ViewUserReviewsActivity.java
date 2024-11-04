@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,8 +17,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 public class ViewUserReviewsActivity extends AppCompatActivity {
 
@@ -89,6 +86,6 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
     private void addReviewToView(Review review) {
         String username = UserSession.getCurrentUser().getFirstName() + " " + UserSession.getCurrentUser().getLastName();
-        reviewView.addReview(username, review.getReviewText(), review.getDate(), review.getStar());
+        reviewView.addReview(true, username, review.getReviewText(), review.getDate(), review.getStar());
     }
 }
