@@ -24,8 +24,8 @@ public class EditReviewActivity extends AppCompatActivity {
 
     private EditText reviewTextInput;
     private RatingBar ratingBar;
-    private LinearLayout deleteReviewConfirmation; // For delete confirmation
-    private Button confirmDeleteButton, cancelDeleteButton; // Confirmation buttons
+    private LinearLayout deleteReviewConfirmation; 
+    private Button confirmDeleteButton, cancelDeleteButton; 
 
     private DatabaseReference reference;
     private FirebaseDatabase root;
@@ -103,7 +103,6 @@ public class EditReviewActivity extends AppCompatActivity {
         cancelDeleteButton.setOnClickListener(v -> deleteReviewConfirmation.setVisibility(View.GONE));
     }
 
-    // Method to find review ID by text
     private void findReviewIdByText(String reviewText, ReviewIdCallback callback) {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -126,7 +125,7 @@ public class EditReviewActivity extends AppCompatActivity {
         });
     }
 
-    // Method to update or delete the review in the database
+
     private void updateDatabase(String reviewId, float rating, String reviewText) {
         DatabaseReference reviewReference = reference.child(reviewId);
         reviewReference.child("stars").setValue(rating);
