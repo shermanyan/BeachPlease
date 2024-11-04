@@ -49,6 +49,14 @@ public class UserProfileActivity extends AppCompatActivity {
 
         currentUser = UserSession.getCurrentUser();
 
+        if (currentUser == null) {
+            Log.e("UserProfileActivity", "User not logged in. Redirecting to login.");
+            //redirect to login screen
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
         userId = currentUser.getId();
 
         Log.e("ProfileActivity", "Current user id: " + userId);
