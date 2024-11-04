@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import java.util.Collections;
 
 
 public class OverviewView extends LinearLayout {
@@ -41,6 +44,7 @@ public class OverviewView extends LinearLayout {
     );
 
     private FlexboxLayout tagContainer;
+    private HashMap<String, Integer> tagNumber;
     private DatabaseReference beachRef;
     private String beachId;
     private List<TextView> tags;
@@ -60,6 +64,9 @@ public class OverviewView extends LinearLayout {
         beachRef = FirebaseDatabase.getInstance()
                 .getReference("beaches")
                 .child(beachId);
+
+        //initial tag counts and setup display
+        loadInitialTagCounts();
 
         findViewById(R.id.address_container).setOnLongClickListener(v -> {
             TextView addressTextView = findViewById(R.id.beach_address); // Assuming address_text is the TextView ID
@@ -82,8 +89,89 @@ public class OverviewView extends LinearLayout {
         });
 
 
-        setupTagButtons();
+//        setupTagButtons();
     }
+
+    //initial tag counts and display in descending order
+    private void loadInitialTagCounts() {
+        beachRef.child("tagNumber").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                tagNumber = new HashMap<>();
+                for (DataSnapshot tagSnapshot : dataSnapshot.getChildren()) {
+                    String tag = tagSnapshot.getKey();
+                    Integer count = tagSnapshot.getValue(Integer.class);
+                    if (tag != null && count != null) {
+                        tagNumber.put(tag, count);
+                    }
+                }
+                displaySortedTags();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getContext(), "Failed to load tag counts", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //display tags sorted in descending order
+    private void displaySortedTags() {
+        tagContainer.removeAllViews();
+
+        //sort tags
+        List<Map.Entry<String, Integer>> sortedTags = new ArrayList<>(tagNumber.entrySet());
+        Collections.sort(sortedTags, (a, b) -> b.getValue().compareTo(a.getValue()));
+
+        for (Map.Entry<String, Integer> entry : sortedTags) {
+            String tag = entry.getKey();
+            int count = entry.getValue();
+
+            View tagItem = LayoutInflater.from(getContext()).inflate(R.layout.tag_item, tagContainer, false);
+            TextView tagName = tagItem.findViewById(R.id.tag_name);
+            TextView tagCounter = tagItem.findViewById(R.id.tag_counter);
+
+            tagName.setText(tag);
+            tagCounter.setText(String.valueOf(count));
+
+            updateTagBackground(tagItem, count);
+
+            //click to increase
+            tagItem.setOnClickListener(v -> updateTagCount(tag, tagCounter, true));
+
+            //long click to decrease
+            tagItem.setOnLongClickListener(v -> {
+                updateTagCount(tag, tagCounter, false);
+                return true;
+            });
+
+            tagContainer.addView(tagItem);
+        }
+    }
+
+    private void updateTagBackground(View tagItem, int count) {
+        if (count > 0) {
+            tagItem.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.tag_roundedbox_selected));
+        } else {
+            tagItem.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.tag_roundedbox));
+        }
+    }
+
+    //update tag count and display
+    private void updateTagCount(String tag, TextView tagCounter, boolean increment) {
+        int currentCount = Integer.parseInt(tagCounter.getText().toString());
+        int newCount = increment ? currentCount+1 : Math.max(0, currentCount-1);
+        tagNumber.put(tag, newCount);
+
+        //database update
+        beachRef.child("tagNumber").child(tag).setValue(newCount);
+        updateTopTags();
+
+        //update display
+        displaySortedTags();
+    }
+
+
 
     private void setupTagButtons() {
         for (String tag : TAGS) {
@@ -173,30 +261,15 @@ public class OverviewView extends LinearLayout {
 
     //to update tags representing the beaches based on tag numbers
     private void updateTopTags() {
-        beachRef.child("tagNumber").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                //tag count get
-                HashMap<String, Integer> tagCounts = new HashMap<>();
-                for (DataSnapshot snapshot : task.getResult().getChildren()) {
-                    String tag = snapshot.getKey();
-                    Integer count = snapshot.getValue(Integer.class);
-                    if (tag != null && count != null) {
-                        tagCounts.put(tag, count);
-                    }
-                }
+        List<Map.Entry<String, Integer>> sortedTags = new ArrayList<>(tagNumber.entrySet());
+        Collections.sort(sortedTags, (a, b) -> b.getValue().compareTo(a.getValue()));
 
-                //two tags with highest number for the beach
-                List<Map.Entry<String, Integer>> sortedTags = new ArrayList<>(tagCounts.entrySet());
-                sortedTags.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+        List<String> topTags = new ArrayList<>();
+        for (int i = 0; i < Math.min(2, sortedTags.size()); i++) {
+            topTags.add(sortedTags.get(i).getKey());
+        }
 
-                List<String> topTags = new ArrayList<>();
-                for (int i = 0; i < Math.min(2, sortedTags.size()); i++) {
-                    topTags.add(sortedTags.get(i).getKey());
-                }
-
-                //database update for tags property
-                beachRef.child("tags").setValue(topTags);
-            }
-        });
+        //database update
+        beachRef.child("tags").setValue(topTags);
     }
 }
