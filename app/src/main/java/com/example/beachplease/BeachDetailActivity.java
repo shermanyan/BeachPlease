@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -22,7 +24,6 @@ import java.util.HashMap;
 
 public class BeachDetailActivity extends AppCompatActivity {
 
-    private DatabaseReference reference;
     private FirebaseDatabase root;
 
     private Beach beach;
@@ -52,7 +53,6 @@ public class BeachDetailActivity extends AppCompatActivity {
         beach = getIntent().getParcelableExtra("beach");
 
         root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
-        reference = root.getReference("users");
 
         // Initialize views
         LinearLayout mainContainer = findViewById(R.id.beach_view);
@@ -80,7 +80,7 @@ public class BeachDetailActivity extends AppCompatActivity {
         // Initialize Add review button
         writeReviewButton = LayoutInflater.from(mainContainer.getContext()).inflate(R.layout.add_review_button, mainContainer, false);
         mainContainer.addView(writeReviewButton);
-        findViewById(R.id.write_review_button).setOnClickListener(v -> {
+        writeReviewButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddReviewActivity.class);
             startActivity(intent);
         });
@@ -212,7 +212,7 @@ public class BeachDetailActivity extends AppCompatActivity {
                     starRatingBar.setRating(averageRating);
                     numRatings.setText("(" + reviewCount + ")");
                 } else {
-                    beachRating.setText("No Ratings");
+                    beachRating.setVisibility(View.GONE);
                     starRatingBar.setRating(0f);
                     numRatings.setText("(0)");
                 }
@@ -220,7 +220,7 @@ public class BeachDetailActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                beachRating.setText("Error loading ratings");
+                Toast.makeText(BeachDetailActivity.this, "Error loading ratings", Toast.LENGTH_SHORT).show();
                 starRatingBar.setRating(0f);
                 numRatings.setText("(0)");
             }
@@ -238,7 +238,7 @@ public class BeachDetailActivity extends AppCompatActivity {
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String firstName = dataSnapshot.child("firstName").getValue(String.class);
                 String lastName = dataSnapshot.child("lastName").getValue(String.class);
                 String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
@@ -247,7 +247,7 @@ public class BeachDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("BeachDetailActivity", "Failed to load user name", databaseError.toException());
                 callback.onUserNameFetched("Unknown User");
             }
