@@ -48,20 +48,17 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
             userId = currentUser.getUid();
         }
 
-        int numReviews = loadReviews();
-
-        if (numReviews == 0){
-            noReviews.setVisibility(View.VISIBLE);
-        }
+        loadReviews();
     }
 
-    private int loadReviews() {
+    private void loadReviews() {
 
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 reviewView.removeAllViews();
+                count = 0;
 
                 for (DataSnapshot reviewSnapshot : snapshot.getChildren()) {
                     Review review = reviewSnapshot.getValue(Review.class);
@@ -76,6 +73,12 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
                     }
                 }
 
+                if (count == 0) {
+                    noReviews.setVisibility(View.VISIBLE);
+                } else {
+                    noReviews.setVisibility(View.INVISIBLE);
+                }
+
             }
 
             @Override
@@ -84,7 +87,6 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
             }
         });
 
-        return count;
     }
 
     private void addReviewToView(Review review) {
