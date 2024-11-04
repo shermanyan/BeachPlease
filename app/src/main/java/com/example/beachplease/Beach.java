@@ -20,6 +20,10 @@ public class Beach implements Parcelable {
         this.tags = tags;
     }
 
+    public Beach() {
+        //default constructor
+    }
+
     // Parcelable constructor
     protected Beach(Parcel in) {
         id = in.readString();

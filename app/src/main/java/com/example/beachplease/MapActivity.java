@@ -1,5 +1,6 @@
 package com.example.beachplease;
 
+import android.util.Log;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -39,6 +40,15 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -61,6 +71,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        initializeBeaches();
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         //Toolbar
@@ -74,8 +86,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Intent intent = new Intent(MapActivity.this, UserProfileActivity.class);
             startActivity(intent);
         });
-
-        initializeBeaches();
 
         //Google Map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -105,7 +115,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Toast.makeText(this, "Location permission is required to show beaches nearby", Toast.LENGTH_SHORT).show();
         }
 
-        displayNearestBeaches(5);
+//        displayNearestBeaches(5);
     }
 
     private void requestLocationPermission() {
@@ -154,38 +164,39 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     //Fabricated beach information, substitute with database operation after implemented
     private void initializeBeaches() {
-        beaches = new ArrayList<>();
-        beaches.add(new Beach("1", "Sunny Cove Beach", 34.0123, -118.4956, Arrays.asList("swimming", "sunbathing")));
-        beaches.add(new Beach("2", "Surf Point Beach", 34.0114, -118.4979, Arrays.asList("surfing", "picnicking")));
-        beaches.add(new Beach("3", "Ocean Breeze Beach", 34.0150, -118.4912, Arrays.asList("swimming", "fishing")));
-        beaches.add(new Beach("4", "Rocky Bay Beach", 34.0180, -118.4985, Arrays.asList("hiking", "wildlife watching")));
-        beaches.add(new Beach("5", "Crystal Sands", 34.0195, -118.4860, Arrays.asList("boating", "snorkeling")));
-        beaches.add(new Beach("6", "Pelican Point", 34.0205, -118.4902, Arrays.asList("kayaking", "bird watching")));
-        beaches.add(new Beach("7", "Seaside Escape", 34.0140, -118.4932, Arrays.asList("picnic area", "bbq pits")));
-        beaches.add(new Beach("8", "Adventure Bay", 34.0210, -118.4948, Arrays.asList("playground", "camping")));
-        beaches.add(new Beach("9", "Coral Cove", 34.0165, -118.4899, Arrays.asList("beach volleyball", "dog friendly")));
-        beaches.add(new Beach("10", "Lagoon Beach", 34.0130, -118.4915, Arrays.asList("windsurfing", "diving")));
-        beaches.add(new Beach("11", "Golden Sands Beach", 34.0220, -118.5020, Arrays.asList("swimming", "sunbathing")));
-        beaches.add(new Beach("12", "Moonlight Bay", 34.0255, -118.5056, Arrays.asList("surfing", "fishing")));
-        beaches.add(new Beach("13", "Ocean Breeze", 34.0195, -118.5092, Arrays.asList("hiking", "wildlife watching")));
-        beaches.add(new Beach("14", "Paradise Point", 34.0234, -118.4923, Arrays.asList("boating", "snorkeling")));
-        beaches.add(new Beach("15", "Pelican Shores", 34.0270, -118.4884, Arrays.asList("kayaking", "bird watching")));
-        beaches.add(new Beach("16", "Shoreline Park Beach", 34.0305, -118.4956, Arrays.asList("picnic area", "bbq pits")));
-        beaches.add(new Beach("17", "Dolphin Cove", 34.0310, -118.4895, Arrays.asList("swimming", "boating")));
-        beaches.add(new Beach("18", "Coral Beach", 34.0350, -118.4820, Arrays.asList("diving", "dog friendly")));
-        beaches.add(new Beach("19", "Sandpiper Beach", 34.0378, -118.4782, Arrays.asList("surfing", "kayaking")));
-        beaches.add(new Beach("20", "Blue Horizon Beach", 34.0420, -118.4750, Arrays.asList("windsurfing", "beach volleyball")));
-        beaches.add(new Beach("21", "Laguna Beach", 34.0455, -118.4706, Arrays.asList("swimming", "sunbathing")));
-        beaches.add(new Beach("22", "Emerald Bay Beach", 34.0490, -118.4650, Arrays.asList("boating", "camping")));
-        beaches.add(new Beach("23", "Sunset Shores", 34.0532, -118.4601, Arrays.asList("diving", "rock climbing")));
-        beaches.add(new Beach("24", "High Tide Beach", 34.0555, -118.4565, Arrays.asList("fishing", "picnicking")));
-        beaches.add(new Beach("25", "Driftwood Beach", 34.0585, -118.4530, Arrays.asList("snorkeling", "kayaking")));
-        beaches.add(new Beach("26", "Seabreeze Beach", 34.0610, -118.4495, Arrays.asList("bird watching", "hiking")));
-        beaches.add(new Beach("27", "Starfish Cove", 34.0650, -118.4440, Arrays.asList("camping", "playground")));
-        beaches.add(new Beach("28", "Seaside Haven", 34.0695, -118.4405, Arrays.asList("beach volleyball", "dog friendly")));
-        beaches.add(new Beach("29", "Whale Watch Beach", 34.0730, -118.4370, Arrays.asList("snorkeling", "sunbathing")));
-        beaches.add(new Beach("30", "Coastal Haven", 34.0770, -118.4325, Arrays.asList("kayaking", "windsurfing")));
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
+        DatabaseReference ref = database.getReference("beaches");
 
+        beaches = new ArrayList<>();
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String id = snapshot.child("id").getValue(String.class);
+                    String name = snapshot.child("name").getValue(String.class);
+                    Double latitude = snapshot.child("latitude").getValue(Double.class);
+                    Double longitude = snapshot.child("longitude").getValue(Double.class);
+                    List<String> tags = new ArrayList<>();
+
+                    for (DataSnapshot tagSnapshot : snapshot.child("tags").getChildren()) {
+                        tags.add(tagSnapshot.getValue(String.class));
+                    }
+                    Beach beach = new Beach(id, name, latitude, longitude, tags);
+                    beaches.add(beach);
+                }
+
+                for (Beach beach : beaches) {
+                    Log.d("MapActivity", "Beach added: " + beach.toString());
+                }
+                displayNearestBeaches(5);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("MapActivity", "Failed to load beaches from Firebase", error.toException());
+            }
+        });
     }
 
     //Show at least 5 nearest beaches
@@ -227,11 +238,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     //Adjust zoom based on nearest beaches
     private void adjustMapZoom(List<Beach> beaches) {
+        if (beaches == null || beaches.isEmpty()) {
+            // If no beaches to show, reset the map to California bounds
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(CALIFORNIA_BOUNDS, 100));
+            return;
+        }
+
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
         for (Beach beach : beaches) {
             boundsBuilder.include(new LatLng(beach.getLatitude(), beach.getLongitude()));
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 100));
+
     }
 
     //Beach onclick
