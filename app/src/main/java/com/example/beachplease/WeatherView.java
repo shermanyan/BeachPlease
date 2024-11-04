@@ -158,6 +158,7 @@ public class WeatherView extends LinearLayout {
     }
 
     private static class WeatherData {
+        public double wave_height;
         public Integer weatherCode;
         public Integer high;
         public Integer low;
@@ -185,6 +186,7 @@ public class WeatherView extends LinearLayout {
     private LottieAnimationView weatherIcon;
     private TextView currentTemperature;
     private TextView currentWeatherDescription;
+    private TextView waveHeightText;
     private TextView precipitationText;
     private TextView uvIndexText;
     private TextView sunsetTimeText;
@@ -238,6 +240,7 @@ public class WeatherView extends LinearLayout {
         currentTemperature = findViewById(R.id.current_temperature);
         currentWeatherDescription = findViewById(R.id.current_weather_description);
         precipitationText = findViewById(R.id.precipitation);
+        waveHeightText = findViewById(R.id.wave_height);
         uvIndexText = findViewById(R.id.uv_index);
         sunsetTimeText = findViewById(R.id.sunset_time);
         dayOfWeekText = findViewById(R.id.day_of_week);
@@ -271,6 +274,7 @@ public class WeatherView extends LinearLayout {
             dayOfWeekText.setText(new SimpleDateFormat("EEEE", Locale.getDefault()).format(displayed_weatherData.date));
         currentTemperature.setText(String.format(Locale.getDefault(), "%d°F", displayed_weatherData.high));
         currentWeatherDescription.setText(WeatherUtil.getWeatherDescription(displayed_weatherData.weatherCode));
+        waveHeightText.setText(String.format(Locale.getDefault(), "%.2f ft", displayed_weatherData.wave_height));
         precipitationText.setText(String.format(Locale.getDefault(), "%d%%", displayed_weatherData.precipitation));
         uvIndexText.setText(String.valueOf(displayed_weatherData.uvIndex));
         sunsetTimeText.setText(displayed_weatherData.sunset);
@@ -325,94 +329,100 @@ public class WeatherView extends LinearLayout {
 
     private void getCurrentWeather() {
         String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&current_weather=true&hourly=precipitation_probability,uv_index&daily=sunset,weathercode&timezone=auto";
+        String urlString2 = "https://marine-api.open-meteo.com/v1/marine?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&hourly=wave_height&timezone=auto&forecast_days=1";
 
         executor.execute(() -> {
-            JSONObject jsonObject = fetchWeatherFromUrl(urlString);
+            JSONObject weather = fetchWeatherFromUrl(urlString);
+            JSONObject marine = fetchWeatherFromUrl(urlString2);
+
             mainThreadHandler.post(() -> {
-                parseCurrentWeatherData(jsonObject, displayed_weatherData);
-                updateView(true);
+                try {
+                    JSONObject currentWeather = weather.getJSONObject("current_weather");
+                    displayed_weatherData.high = WeatherUtil.toFahrenheit(currentWeather.getInt("temperature"));  // Convert to Fahrenheit
+                    displayed_weatherData.weatherCode = currentWeather.getInt("weathercode");
+
+                    JSONArray hourlyPrecipitation = weather.getJSONObject("hourly").getJSONArray("precipitation_probability");
+                    JSONArray hourlyUvIndex = weather.getJSONObject("hourly").getJSONArray("uv_index");
+
+                    displayed_weatherData.precipitation = hourlyPrecipitation.getInt(0);
+                    displayed_weatherData.uvIndex = hourlyUvIndex.getInt(0);
+
+                    JSONArray sunsetArray = weather.getJSONObject("daily").getJSONArray("sunset");
+                    String sunsetTime = sunsetArray.getString(0);
+                    displayed_weatherData.sunset = parseTime(sunsetTime);
+
+
+                    JSONArray waveHeight = marine.getJSONObject("hourly").getJSONArray("wave_height");
+                    displayed_weatherData.wave_height = waveHeight.getDouble(0);
+
+                    updateView(true);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             });
         });
+
     }
 
-
-    private void parseCurrentWeatherData(JSONObject jsonObject, WeatherData data) {
-        try {
-
-            JSONObject currentWeather = jsonObject.getJSONObject("current_weather");
-            data.high = WeatherUtil.toFahrenheit(currentWeather.getInt("temperature"));  // Convert to Fahrenheit
-            data.weatherCode = currentWeather.getInt("weathercode");
-
-            JSONArray hourlyPrecipitation = jsonObject.getJSONObject("hourly").getJSONArray("precipitation_probability");
-            JSONArray hourlyUvIndex = jsonObject.getJSONObject("hourly").getJSONArray("uv_index");
-
-            data.precipitation = hourlyPrecipitation.getInt(0);
-            data.uvIndex = hourlyUvIndex.getInt(0);
-
-            JSONArray sunsetArray = jsonObject.getJSONObject("daily").getJSONArray("sunset");
-            String sunsetTime = sunsetArray.getString(0);
-            data.sunset = parseTime(sunsetTime);
-
-        } catch (Exception e) {
-            Log.e("WeatherView", "Error parsing current weather data", e);
-        }
-    }
 
     private void getForecastWeather() {
         String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,uv_index_max,sunset&timezone=auto";
+        String urlString2 = "https://marine-api.open-meteo.com/v1/marine?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&daily=wave_height_max&timezone=auto";
 
         executor.execute(() -> {
-            JSONObject jsonObject = fetchWeatherFromUrl(urlString);
+            JSONObject weather = fetchWeatherFromUrl(urlString);
+            JSONObject marine = fetchWeatherFromUrl(urlString2);
+
             mainThreadHandler.post(() -> {
-                populateForecast(this.getContext(), jsonObject);
+                try {
+                    Calendar cal = Calendar.getInstance();
+
+                    JSONArray dailyTemperatures = weather.getJSONObject("daily").getJSONArray("temperature_2m_max");
+                    JSONArray dailyLowTemperatures = weather.getJSONObject("daily").getJSONArray("temperature_2m_min");
+                    JSONArray weatherCodes = weather.getJSONObject("daily").getJSONArray("weathercode");
+                    JSONArray dailyPrecipitation = weather.getJSONObject("daily").getJSONArray("precipitation_sum");
+                    JSONArray dailyUvIndex = weather.getJSONObject("daily").getJSONArray("uv_index_max");
+                    JSONArray dailySunset = weather.getJSONObject("daily").getJSONArray("sunset");
+
+                    JSONArray waveHeight = marine.getJSONObject("daily").getJSONArray("wave_height_max");
+
+                    forecastList.clear();
+
+                    for (int i = 0; i < dailyTemperatures.length(); i++) {
+                        WeatherData weatherData = new WeatherData();
+                        weatherData.date = cal.getTime();
+                        weatherData.high = WeatherUtil.toFahrenheit(dailyTemperatures.getInt(i));
+                        weatherData.low = WeatherUtil.toFahrenheit(dailyLowTemperatures.getInt(i));
+                        weatherData.weatherCode = weatherCodes.getInt(i);
+                        weatherData.precipitation = dailyPrecipitation.getInt(i);
+                        weatherData.uvIndex = dailyUvIndex.getInt(i);
+                        weatherData.sunset = parseTime(dailySunset.getString(i));
+                        weatherData.description = WeatherUtil.getWeatherDescription(weatherData.weatherCode);
+                        weatherData.wave_height = waveHeight.getDouble(i);
+
+                        forecastList.add(new ForecastItem(this.getContext(), weatherData));
+
+                        cal.add(Calendar.DAY_OF_YEAR, 1);
+                    }
+
+                    LinearLayout forecastContainer = findViewById(R.id.forecast_container);
+
+                    for (ForecastItem forecastItem : forecastList) {
+                        forecastItem.setOnClickListener(v -> dayForecastHandler(v, forecastItem));
+
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        params.setMargins(0, 0, 15, 0);
+                        forecastItem.setLayoutParams(params);
+
+                        forecastContainer.addView(forecastItem);
+                    }
+                } catch (Exception e) {
+                    Log.e("WeatherView", "Error parsing forecast data", e);
+                }
             });
         });
     }
 
-    private void populateForecast(Context context, JSONObject jsonObject) {
-        try {
-            Calendar cal = Calendar.getInstance();
-
-            JSONArray dailyTemperatures = jsonObject.getJSONObject("daily").getJSONArray("temperature_2m_max");
-            JSONArray dailyLowTemperatures = jsonObject.getJSONObject("daily").getJSONArray("temperature_2m_min");
-            JSONArray weatherCodes = jsonObject.getJSONObject("daily").getJSONArray("weathercode");
-            JSONArray dailyPrecipitation = jsonObject.getJSONObject("daily").getJSONArray("precipitation_sum");
-            JSONArray dailyUvIndex = jsonObject.getJSONObject("daily").getJSONArray("uv_index_max");
-            JSONArray dailySunset = jsonObject.getJSONObject("daily").getJSONArray("sunset");
-
-            forecastList.clear();
-
-            for (int i = 0; i < dailyTemperatures.length(); i++) {
-                WeatherData weatherData = new WeatherData();
-                weatherData.date = cal.getTime();
-                weatherData.high = WeatherUtil.toFahrenheit(dailyTemperatures.getInt(i));
-                weatherData.low = WeatherUtil.toFahrenheit(dailyLowTemperatures.getInt(i));
-                weatherData.weatherCode = weatherCodes.getInt(i);
-                weatherData.precipitation = dailyPrecipitation.getInt(i);
-                weatherData.uvIndex = dailyUvIndex.getInt(i);
-                weatherData.sunset = parseTime(dailySunset.getString(i));
-                weatherData.description = WeatherUtil.getWeatherDescription(weatherData.weatherCode);
-
-                forecastList.add(new ForecastItem(context, weatherData));
-
-                cal.add(Calendar.DAY_OF_YEAR, 1);
-            }
-
-            LinearLayout forecastContainer = findViewById(R.id.forecast_container);
-
-            for (ForecastItem forecastItem : forecastList) {
-                forecastItem.setOnClickListener(v -> dayForecastHandler(v, forecastItem));
-
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, 0, 20, 0);
-                forecastItem.setLayoutParams(params);
-
-                forecastContainer.addView(forecastItem);
-            }
-        } catch (Exception e) {
-            Log.e("WeatherView", "Error parsing forecast data", e);
-        }
-    }
 
 
     public static String parseTime(String iso8601Time) {
@@ -515,7 +525,7 @@ public class WeatherView extends LinearLayout {
                     dataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.oceanblue));
 
                     dataSet.setValueTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                    dataSet.setValueTextSize(10f);
+                    dataSet.setValueTextSize(15f);
 
                     dataSet.setLineWidth(2f);
                     dataSet.setCircleRadius(1f);
@@ -570,7 +580,7 @@ public class WeatherView extends LinearLayout {
                     dataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.oceanblue));
 
                     dataSet.setValueTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                    dataSet.setValueTextSize(10f);
+                    dataSet.setValueTextSize(15f);
 
                     dataSet.setLineWidth(2f);
                     dataSet.setCircleRadius(1f);
