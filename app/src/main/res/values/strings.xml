@@ -8,5 +8,6 @@
     <string name="signupprompt">Fill Out Form</string>
     <string name="default_web_client_id">172064172118-qq41a6n8jjvmv78lmi066klkkuhn5t59.apps.googleusercontent.com</string>
     <string name="message_template">with pass: %1$s and hashed: %2$s</string>
-
+    <string name="share_details_reviews">Share details of your experience at this place</string>
+    <string name="delete_review_message">Field is empty. Do you wish to delete review?</string>
 </resources>

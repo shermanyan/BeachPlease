@@ -55,6 +55,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void createAccount(View view){
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
+    }
+
     public void login(View view) {
         TextInputLayout emailLayout = findViewById(R.id.loginemail);
         TextInputEditText emailLayoutText = (TextInputEditText) emailLayout.getEditText();

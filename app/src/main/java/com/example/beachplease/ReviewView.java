@@ -10,9 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class ReviewView extends LinearLayout {
 
     private static final int MAX_LINES_COLLAPSED = 4;
+
+//
+//    private final FirebaseDatabase root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
+//    private final DatabaseReference reference = root.getReference("reviews");
+
 
     public ReviewView(Context context) {
         super(context);
@@ -44,6 +52,7 @@ public class ReviewView extends LinearLayout {
             editButton.setOnClickListener(v -> {
 
                 Intent intent = new Intent(getContext(), EditReviewActivity.class);
+
                 intent.putExtra("reviewText", reviewText);
                 intent.putExtra("rating", rating);
                 getContext().startActivity(intent);

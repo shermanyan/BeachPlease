@@ -50,7 +50,6 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
     private void loadReviews() {
 
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -88,6 +87,6 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
     private void addReviewToView(Review review) {
         String username = UserSession.getCurrentUser().getFirstName() + " " + UserSession.getCurrentUser().getLastName();
-        reviewView.addReview(true, username, review.getReviewText(), review.getDate(), review.getStar());
+        reviewView.addReview(true, username, review.getReviewText(), review.getDate(), review.getStars());
     }
 }

@@ -63,6 +63,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,6 +77,37 @@
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
         android:onClick="login"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="First Time User?"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/signup"
+        android:layout_marginTop="40dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/dark_gray" />
+
+    <Button
+        android:id="@+id/signup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginpassword"
+        android:layout_marginTop="280dp"
+        android:text="Create Account"
+        android:textSize="15sp"
+        android:textColor="@color/dark_gray"
+        android:background="@drawable/rounded_box"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:onClick="createAccount"/>
+
 
 
 

@@ -149,6 +149,7 @@ public class BeachDetailActivity extends AppCompatActivity {
         WEATHER
     }
 
+
     private void retrieveBeachDetails() {
 
         beachTitle.setText(beach.getName());
