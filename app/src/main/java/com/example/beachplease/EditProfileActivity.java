@@ -115,11 +115,6 @@ public class EditProfileActivity extends AppCompatActivity {
             successful = true;
         }
 
-//        if (!newPassword.isEmpty()) {
-//            userRef.child("password").setValue(newPassword);
-//            currentUser.setPassword(newPassword);
-//            successful = true;
-//        }
 
         if (successful) {
             displayMessage();
@@ -131,114 +126,5 @@ public class EditProfileActivity extends AppCompatActivity {
         successMessage.setVisibility(View.VISIBLE);
     }
 
-    // ... rest of your methods ...
-}
 
-//public class EditProfileActivity extends AppCompatActivity {
-//
-//    private TextInputLayout newUsernameLayout;
-//    private TextInputEditText newUsernameText;
-//
-//    private TextInputLayout newEmailLayout;
-//    private TextInputEditText newEmailText;
-//
-//    private TextInputLayout newPasswordLayout;
-//    private TextInputEditText newPassText;
-//
-//    private PasswordHash passwordHash; // Declare PasswordHash
-//    private User currentUser;
-//    private TextView successMessage;
-//
-//    // Firebase
-//    private FirebaseDatabase root;
-//    private DatabaseReference reference;
-//
-//    @SuppressLint("MissingInflatedId")
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.edit_profile);
-//
-//        // Initialize the PasswordHash object
-//        passwordHash = new PasswordHash(); // Initialize passwordHash first
-//
-//        findViewById(R.id.returnIcon).setOnClickListener(this::returnToProfile);
-//
-//
-//        successMessage = findViewById(R.id.success);
-//
-//        currentUser = UserSession.getCurrentUser();
-//        // Debug log to see the current user
-//        Log.d("ProfileActivity", "Current User: " + currentUser);
-//
-//    }
-//
-//    private void returnToProfile(View view) {
-//        Intent intent = new Intent(this, ProfileActivity.class);
-//        startActivity(intent);
-//    }
-//
-//    public void saveChanges(View view) {
-//
-//
-//
-//        // Initialize the TextInputLayouts and EditTexts
-//        newUsernameLayout = findViewById(R.id.editUsername);
-//        newUsernameText = (TextInputEditText) newUsernameLayout.getEditText();
-//
-//        newEmailLayout = findViewById(R.id.editEmail);
-//        newEmailText = (TextInputEditText) newEmailLayout.getEditText();
-//
-//        newPasswordLayout = findViewById(R.id.editPassword);
-//        newPassText = (TextInputEditText) newPasswordLayout.getEditText();
-//
-//        root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
-//        reference = root.getReference("users");
-//
-//        if (currentUser == null) {
-//            Log.e("EditProfileActivity", "Current user is null!");
-//            return; // Exit the method if currentUser is not set
-//        }
-//
-//        String newUsername = newUsernameText.getText() != null ? newUsernameText.getText().toString() : "";
-//        String newEmail = newEmailText.getText() != null ? newEmailText.getText().toString() : "";
-//        String newPassword = "";
-//
-//        if (newPassText.getText() != null) {
-//            String tempPass = newPassText.getText().toString();
-//            if (!tempPass.isEmpty()) {
-//                newPassword = passwordHash.hashPassword(tempPass);
-//            }
-//        }
-//
-//        boolean successful = false;
-//
-//        if (!newUsername.isEmpty()) {
-//            reference.child(currentUser.getId()).child("userName").setValue(newUsername);
-//            currentUser.setUserName(newUsername);
-//            successful = true;
-//        }
-//
-//        if (!newEmail.isEmpty()) {
-//            reference.child(currentUser.getId()).child("email").setValue(newEmail);
-//            currentUser.setEmail(newEmail);
-//            successful = true;
-//        }
-//
-//        if (!newPassword.isEmpty()) {
-//            reference.child(currentUser.getId()).child("password").setValue(newPassword);
-//            currentUser.setPassword(newPassword);
-//            successful = true;
-//        }
-//
-//        if (successful) {
-//            displayMessage();
-//        }
-//
-//        Log.d("ProfileActivity", "CURRENT NAME: " + newUsername);
-//    }
-//
-//    public void displayMessage() {
-//        successMessage.setVisibility(View.VISIBLE);
-//    }
-//}
+}
