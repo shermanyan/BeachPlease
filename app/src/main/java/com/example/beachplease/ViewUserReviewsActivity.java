@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,11 +19,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 public class ViewUserReviewsActivity extends AppCompatActivity {
 
     private DatabaseReference reference;
     private ReviewView reviewView;
     private String userId;
+    private int count;
+    private TextView noReviews;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -35,6 +40,7 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
 
         reviewView = findViewById(R.id.review_view);
+        noReviews = findViewById(R.id.noReviewsFound);
 
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -42,10 +48,16 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
             userId = currentUser.getUid();
         }
 
-        loadReviews();
+        int numReviews = loadReviews();
+
+        if (numReviews == 0){
+            noReviews.setVisibility(View.VISIBLE);
+        }
     }
 
-    private void loadReviews() {
+    private int loadReviews() {
+
+
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -57,6 +69,7 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
                         if (userId.equals(review.getUserId())) {
                             addReviewToView(review);
+                            count++;
                         }
                     } else {
                         Log.d("ViewUserReviewsActivity", "Null review found at snapshot: " + reviewSnapshot.getKey());
@@ -70,6 +83,8 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
                 Toast.makeText(ViewUserReviewsActivity.this, "Failed to load reviews.", Toast.LENGTH_SHORT).show();
             }
         });
+
+        return count;
     }
 
     private void addReviewToView(Review review) {
