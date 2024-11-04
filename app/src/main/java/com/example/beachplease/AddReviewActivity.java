@@ -12,6 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class AddReviewActivity extends AppCompatActivity {
 
@@ -69,14 +73,14 @@ public class AddReviewActivity extends AppCompatActivity {
 
     private void updateDatabase(float rating, String reviewText) {
 
-        // TODO - Implement database update logic
-
         // Create new Review
+
+        String date = new SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(new Date());
 
         // Create unique Id for each review
         String reviewId = reference.push().getKey();
 
-        Review review = new Review(rating, reviewText, userId, beachId);
+        Review review = new Review(beachId, date, reviewText, rating, userId);
 
         if (reviewId != null){
             reference.child(reviewId).setValue(review).
@@ -106,3 +110,5 @@ public class AddReviewActivity extends AppCompatActivity {
     }
 
 }
+
+
