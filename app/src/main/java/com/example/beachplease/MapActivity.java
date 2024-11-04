@@ -71,7 +71,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         ImageView userIcon = findViewById(R.id.userIcon);
         userIcon.setOnClickListener(v -> {
             //Substitute class after implemented
-            Intent intent = new Intent(MapActivity.this, UserProfileActivity.class);
+            Intent intent = new Intent(MapActivity.this, ProfileActivity.class);
             startActivity(intent);
         });
 

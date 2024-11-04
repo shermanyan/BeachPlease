@@ -27,6 +27,7 @@ playServicesLocationVersion = "21.0.1"
 playServicesMaps = "19.0.0"
 playServicesMapsVersion = "18.0.2"
 springSecurityCore = "6.4.3"
+firebaseFirestore = "25.1.1"
 
 [libraries]
 bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
@@ -60,6 +61,7 @@ play-services-maps = { module = "com.google.android.gms:play-services-maps", ver
 play-services-maps-v1802 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 spring-security-core = { module = "org.springframework.security:spring-security-core", version.ref = "springSecurityCore" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

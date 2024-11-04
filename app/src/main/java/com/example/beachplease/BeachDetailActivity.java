@@ -1,5 +1,6 @@
 package com.example.beachplease;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ public class BeachDetailActivity extends AppCompatActivity {
     private TextView reviewsTab;
     private TextView weatherTab;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +74,13 @@ public class BeachDetailActivity extends AppCompatActivity {
         writeReviewButton = LayoutInflater.from(mainContainer.getContext()).inflate(R.layout.add_review_button, mainContainer, false);
         mainContainer.addView(writeReviewButton);
         findViewById(R.id.write_review_button).setOnClickListener(v -> {
+
+
             Intent intent = new Intent(this, AddReviewActivity.class);
+
+            String beachId = beach.getId();
+            intent.putExtra("id", beachId);
+
             startActivity(intent);
         });
         writeReviewButton.setVisibility(View.GONE);

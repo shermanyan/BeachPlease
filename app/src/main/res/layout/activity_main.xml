@@ -11,11 +11,11 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="550dp"
+        android:layout_width="450dp"
         android:layout_height="300dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="30dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/app_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,9 +33,7 @@
         android:onClick="signupUser"
         app:layout_constraintTop_toBottomOf="@+id/logo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-
-        />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 
@@ -47,6 +45,7 @@
         android:text="@string/signin"
         android:textColor="@color/oceanblue"
         android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signupbutton"
@@ -67,16 +66,16 @@
     "
 
     <!-- Only for testing purpose -->
-    <Button
-        android:id="@+id/mapButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open Map"
-        android:onClick="openMap"
-        android:backgroundTint="@color/oceanblue"
-        app:layout_constraintTop_toBottomOf="@+id/login"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+<!--    <Button-->
+<!--        android:id="@+id/mapButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Open Map"-->
+<!--        android:onClick="openMap"-->
+<!--        android:backgroundTint="@color/oceanblue"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/login"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
 
 
 
