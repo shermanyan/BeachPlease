@@ -31,8 +31,19 @@
                 android:textColor="@color/dark_gray"
                 android:textSize="20sp" />
 
+
         </LinearLayout>
         <!-- Tag Section -->
+
+<!--        <include-->
+<!--            android:id="@+id/add_tag_button"-->
+<!--            layout="@layout/add_tag_button"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:orientation="vertical"-->
+
+<!--            />-->
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/tag_container"

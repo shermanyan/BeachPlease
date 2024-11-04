@@ -71,8 +71,6 @@ public class BeachDetailActivity extends AppCompatActivity {
         weatherTab.setOnClickListener(this::switchTabs);
 
         // Initialize OverviewTab
-
-
         overviewView = new OverviewView(mainContainer.getContext(), beach.getId());
         mainContainer.addView(overviewView);
         overviewView.setVisibility(View.VISIBLE);
@@ -178,7 +176,7 @@ public class BeachDetailActivity extends AppCompatActivity {
                         } else {
                             //get user name if not in cache from firebase
                             fetchUserName(userId, (userName) -> {
-                                reviewView.addReview(userName, reviewText, date, stars);
+                                reviewView.addReview( userName, reviewText, date, stars);
                                 userNameCache.put(userId, userName); // Cache the fetched name
                                 Log.d("BeachDetailActivity", "User full name: "+userName);
                             });
