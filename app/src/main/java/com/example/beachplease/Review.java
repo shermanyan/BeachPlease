@@ -24,8 +24,8 @@ public class Review {
     public String getBeachId() { return beachId; }
     public void setBeachId(String beachId) { this.beachId = beachId; }
 
-    public String getDate() { return date; }  // New getter for date
-    public void setDate(String date) { this.date = date; }  // New setter for date
+    public String getDate() { return date; }
+    public void setDate(String date) { this.date = date; }
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }

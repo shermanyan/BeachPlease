@@ -100,7 +100,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void viewReviews(View view) {
-        Intent intent = new Intent(this, AddReviewActivity.class);
+        Intent intent = new Intent(this, ViewUserReviewsActivity.class);
         startActivity(intent);
     }
 

@@ -1,10 +1,8 @@
 package com.example.beachplease;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -24,25 +22,8 @@ public class ReviewView extends LinearLayout {
     }
 
     public void addReview(String username, String reviewText, String date, float rating) {
-        addReview(false, username, reviewText, date, rating);
-    }
-
-    public void addReview(boolean editable, String username, String reviewText, String date, float rating) {
         // Inflate the review layout
         View reviewItem = LayoutInflater.from(getContext()).inflate(R.layout.review_item, this, false);
-
-        if (editable) {
-            // Add edit button
-            ImageView editButton = reviewItem.findViewById(R.id.edit_review);
-            editButton.setVisibility(View.VISIBLE);
-            editButton.setOnClickListener(v -> {
-
-                Intent intent = new Intent(this.getContext(), EditReviewActivity.class);
-                intent.putExtra("reviewText", reviewText);
-                intent.putExtra("rating", rating);
-                this.getContext().startActivity(intent);
-            });
-        }
 
         // Initialize views in the review item
         TextView reviewUsername = reviewItem.findViewById(R.id.review_username);

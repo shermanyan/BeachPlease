@@ -24,8 +24,6 @@ public class AddReviewActivity extends AppCompatActivity {
 
     private String userId;
     private String beachId;
-//    private String comment;
-//    private float rating;
 
     private DatabaseReference reference;
     private FirebaseDatabase root;
