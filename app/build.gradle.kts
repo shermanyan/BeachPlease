@@ -55,7 +55,9 @@ dependencies {
 
     implementation(libs.google.flexbox)
 
-    implementation ("com.airbnb.android:lottie:4.2.2")
+    implementation (libs.lottie)
+    implementation (libs.mpandroidchart)
+
 
 
 }

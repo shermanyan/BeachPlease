@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/weather_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:id="@+id/weather_view">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/day_of_week"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Today"
         android:textColor="@color/dark_blue"
         android:textSize="25sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp" />
+        android:textStyle="bold" />
 
     <!-- Current Weather Section -->
     <LinearLayout
@@ -30,8 +30,7 @@
             android:layout_height="80dp"
             android:contentDescription="Weather Icon"
             app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            />
+            app:lottie_loop="true" />
 
         <!-- Temperature and Weather Info -->
         <LinearLayout
@@ -149,8 +148,8 @@
         android:layout_height="wrap_content"
         android:gravity="start"
         android:orientation="horizontal"
-        android:paddingVertical="10dp"
-        android:paddingHorizontal="10dp">
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp">
 
         <TextView
             android:id="@+id/tab_temperature"
@@ -180,12 +179,21 @@
     </LinearLayout>
 
     <!-- Temperature Graph (Placeholder) -->
-    <View
-        android:id="@+id/graph"
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/temperature_chart"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="180dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/weather_roundedbox" />
+
+    <!-- Temperature Graph (Placeholder) -->
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/wave_height_chart"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/weather_roundedbox"
-        android:layout_marginBottom="16dp" />
+        android:visibility="gone" />
 
     <!-- Daily Forecast Section -->
     <HorizontalScrollView
@@ -194,10 +202,10 @@
         android:paddingBottom="16dp">
 
         <LinearLayout
+            android:id="@+id/forecast_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/forecast_container">
+            android:orientation="horizontal">
             <!-- Your forecast items will be added dynamically here -->
         </LinearLayout>
     </HorizontalScrollView>

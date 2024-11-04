@@ -3,6 +3,7 @@ package com.example.beachplease;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,16 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -30,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 
 public class WeatherView extends LinearLayout {
 
@@ -167,34 +177,51 @@ public class WeatherView extends LinearLayout {
 
     private WeatherData displayed_weatherData;
 
-    private final TextView temperatureTab;
-    private final TextView waveHeightTab;
-    private View graph;
+    private TextView temperatureTab;
+    private TextView waveHeightTab;
+    private LineChart tempChart;
+    private LineChart waveChart;
 
-    private final LottieAnimationView weatherIcon;
-    private final TextView currentTemperature;
-    private final TextView currentWeatherDescription;
-    private final TextView precipitationText;
-    private final TextView uvIndexText;
-    private final TextView sunsetTimeText;
-    private final TextView dayOfWeekText;
+    private LottieAnimationView weatherIcon;
+    private TextView currentTemperature;
+    private TextView currentWeatherDescription;
+    private TextView precipitationText;
+    private TextView uvIndexText;
+    private TextView sunsetTimeText;
+    private TextView dayOfWeekText;
 
-    private Tab activeTab = Tab.TEMPERATURE;
 
     private final Beach beach;
     private final List<ForecastItem> forecastList;
 
 
+    public WeatherView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        forecastList = new ArrayList<>();
+        beach = null; // or initialize appropriately
+        displayed_weatherData = new WeatherData();
+        displayed_weatherData.date = Calendar.getInstance().getTime();
+        createView(context);
+        getCurrentWeather();
+        getForecastWeather();
+
+        init(context);
+    }
+
     public WeatherView(Context context, Beach beach) {
         super(context);
 
         forecastList = new ArrayList<>();
-
         this.beach = beach;
+
+        init(context);
+
+    }
+
+    private void init(Context context) {
 
         displayed_weatherData = new WeatherData();
         displayed_weatherData.date = Calendar.getInstance().getTime();
-
 
         createView(context);
         getCurrentWeather();
@@ -215,6 +242,13 @@ public class WeatherView extends LinearLayout {
         sunsetTimeText = findViewById(R.id.sunset_time);
         dayOfWeekText = findViewById(R.id.day_of_week);
 
+        tempChart = findViewById(R.id.temperature_chart);
+        waveChart = findViewById(R.id.wave_height_chart);
+
+        setupChart(tempChart);
+        setupChart(waveChart);
+
+        updateTables();
     }
 
 
@@ -257,17 +291,19 @@ public class WeatherView extends LinearLayout {
 
         switch (tab) {
             case TEMPERATURE:
+                tempChart.setVisibility(View.VISIBLE);
+                waveChart.setVisibility(View.GONE);
                 temperatureTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.oceanblue));
                 waveHeightTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.dark_gray));
                 break;
             case WAVE_HEIGHT:
+                tempChart.setVisibility(View.GONE);
+                waveChart.setVisibility(View.VISIBLE);
                 temperatureTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.dark_gray));
                 waveHeightTab.setTextColor(ContextCompat.getColor(this.getContext(), R.color.oceanblue));
                 break;
         }
 
-        activeTab = tab;
-        updateTables();
     }
 
 
@@ -282,32 +318,26 @@ public class WeatherView extends LinearLayout {
         }
 
         displayed_weatherData = forecastItem.weatherData;
-        updateTables();
+        updateTables(displayed_weatherData.date);
         updateView();
     }
 
-
-    private void updateTables() {
-        // Placeholder for updating tables
-
-    }
 
     private void getCurrentWeather() {
         String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&current_weather=true&hourly=precipitation_probability,uv_index&daily=sunset,weathercode&timezone=auto";
 
         executor.execute(() -> {
-            String result = fetchWeatherFromUrl(urlString);
+            JSONObject jsonObject = fetchWeatherFromUrl(urlString);
             mainThreadHandler.post(() -> {
-                parseCurrentWeatherData(result, displayed_weatherData);
+                parseCurrentWeatherData(jsonObject, displayed_weatherData);
                 updateView(true);
             });
         });
     }
 
 
-    private void parseCurrentWeatherData(String json, WeatherData data) {
+    private void parseCurrentWeatherData(JSONObject jsonObject, WeatherData data) {
         try {
-            JSONObject jsonObject = new JSONObject(json);
 
             JSONObject currentWeather = jsonObject.getJSONObject("current_weather");
             data.high = WeatherUtil.toFahrenheit(currentWeather.getInt("temperature"));  // Convert to Fahrenheit
@@ -332,18 +362,17 @@ public class WeatherView extends LinearLayout {
         String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,uv_index_max,sunset&timezone=auto";
 
         executor.execute(() -> {
-            String result = fetchWeatherFromUrl(urlString);
+            JSONObject jsonObject = fetchWeatherFromUrl(urlString);
             mainThreadHandler.post(() -> {
-                populateForecast(this.getContext(), result);
+                populateForecast(this.getContext(), jsonObject);
             });
         });
     }
 
-    private void populateForecast(Context context, String forecastJsonData) {
+    private void populateForecast(Context context, JSONObject jsonObject) {
         try {
             Calendar cal = Calendar.getInstance();
 
-            JSONObject jsonObject = new JSONObject(forecastJsonData);
             JSONArray dailyTemperatures = jsonObject.getJSONObject("daily").getJSONArray("temperature_2m_max");
             JSONArray dailyLowTemperatures = jsonObject.getJSONObject("daily").getJSONArray("temperature_2m_min");
             JSONArray weatherCodes = jsonObject.getJSONObject("daily").getJSONArray("weathercode");
@@ -399,7 +428,7 @@ public class WeatherView extends LinearLayout {
         }
     }
 
-    private String fetchWeatherFromUrl(String urlString) {
+    private JSONObject fetchWeatherFromUrl(String urlString) {
         StringBuilder result = new StringBuilder();
         try {
             URL url = new URL(urlString);
@@ -413,7 +442,168 @@ public class WeatherView extends LinearLayout {
         } catch (Exception e) {
             Log.e("WeatherView", "Error fetching weather data", e);
         }
-        return result.toString();
+        try {
+            return new JSONObject(result.toString());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void setupChart(LineChart chart) {
+        chart.getDescription().setEnabled(false);
+        chart.setDrawGridBackground(false);
+        chart.getAxisRight().setEnabled(false);
+        chart.setScaleEnabled(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setDragEnabled(true); // Enable dragging
+        chart.setVisibleXRangeMaximum(2); // Set maximum visible range for X-axis to control how much is visible at once
+
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
+
+        // Customize Left Y-axis
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setGranularity(1f);
+
+        // Optionally customize other Y-axis properties
+        leftAxis.setDrawLabels(true); // Enable Y-axis labels if not already enabled
+        leftAxis.setLabelCount(5, true); // Specify how many labels to show on the Y-axis
+    }
+
+
+    private void updateTables() {
+        Calendar cal = Calendar.getInstance();
+        updateTables(cal.getTime());
+    }
+
+    private void updateTables(Date date) {
+        populateTemperatureChart(date);
+        populateWaveHeightChart(date);
+    }
+
+    private void populateTemperatureChart(Date date) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String fDate = dateFormat.format(date);
+
+
+        String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude() +
+                "&longitude=" + beach.getLongitude() + "&current=temperature_2m&hourly=temperature_2m&temperature_unit=fahrenheit&timezone=auto&" +
+                "&start_date=" + fDate + "&end_date=" + fDate ;
+
+
+        executor.execute(() -> {
+            try {
+                JSONObject weatherData = fetchWeatherFromUrl(urlString);
+                JSONArray temperatureData = weatherData.getJSONObject("hourly").getJSONArray("temperature_2m");
+                JSONArray timeData = weatherData.getJSONObject("hourly").getJSONArray("time");
+
+                List<String> dates = new ArrayList<>();
+                List<Entry> entries = new ArrayList<>();
+
+                for (int i = 0; i < temperatureData.length(); i++) {
+                    String time = timeData.getString(i);
+                    dates.add(formatTimeToHour(time));
+                    entries.add(new Entry((float) i, (float) temperatureData.getDouble(i)));
+                }
+
+
+                post(() -> {
+                    LineDataSet dataSet = new LineDataSet(entries, "Temperature (°F)");
+                    dataSet.setColor(ContextCompat.getColor(getContext(), R.color.oceanblue));
+                    dataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.oceanblue));
+
+                    dataSet.setValueTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                    dataSet.setValueTextSize(10f);
+
+                    dataSet.setLineWidth(2f);
+                    dataSet.setCircleRadius(1f);
+                    dataSet.setDrawCircleHole(false);
+                    dataSet.setDrawValues(false);
+
+
+                    LineData lineData = new LineData(dataSet);
+
+                    tempChart.setData(lineData);
+                    tempChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(dates));
+
+                    tempChart.getAxisLeft().resetAxisMinimum();
+                    tempChart.getAxisLeft().resetAxisMaximum();
+
+                    tempChart.invalidate();
+                });
+            } catch (Exception e) {
+                Log.e("WeatherView", "Error populating temperature chart", e);
+            }
+        });
+    }
+
+    private void populateWaveHeightChart(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String fDate = dateFormat.format(date);
+
+        String urlString = "https://marine-api.open-meteo.com/v1/marine?latitude=" + beach.getLatitude() +
+                "&longitude=" + beach.getLongitude() +
+                "&hourly=wave_height&length_unit=imperial&" +
+                "&start_date=" + fDate + "&end_date=" + fDate ;
+
+        executor.execute(() -> {
+            try {
+                JSONObject weatherData = fetchWeatherFromUrl(urlString);
+                JSONArray waveHeightData = weatherData.getJSONObject("hourly").getJSONArray("wave_height");
+                JSONArray timeData = weatherData.getJSONObject("hourly").getJSONArray("time");
+
+                List<String> dates = new ArrayList<>();
+                List<Entry> entries = new ArrayList<>();
+
+                for (int i = 0; i < waveHeightData.length(); i++) {
+                    String time = timeData.getString(i);
+                    dates.add(formatTimeToHour(time));
+                    entries.add(new Entry(i, (float) waveHeightData.getDouble(i)));
+                }
+
+                // Update UI on the main thread
+                post(() -> {
+                    LineDataSet dataSet = new LineDataSet(entries, "Wave Height (ft)");
+                    dataSet.setColor(ContextCompat.getColor(getContext(), R.color.oceanblue));
+                    dataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.oceanblue));
+
+                    dataSet.setValueTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                    dataSet.setValueTextSize(10f);
+
+                    dataSet.setLineWidth(2f);
+                    dataSet.setCircleRadius(1f);
+                    dataSet.setDrawCircleHole(false);
+                    dataSet.setDrawValues(false);
+
+                    LineData lineData = new LineData(dataSet);
+                    waveChart.setData(lineData);
+                    waveChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(dates));
+
+                    waveChart.getAxisLeft().resetAxisMinimum();
+                    waveChart.getAxisLeft().resetAxisMaximum();
+
+                    waveChart.invalidate();
+                });
+            } catch (Exception e) {
+                Log.e("WeatherView", "Error populating wave height chart", e);
+            }
+        });
+    }
+
+
+    private String formatTimeToHour(String isoTime) {
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault());
+        SimpleDateFormat hourFormat = new SimpleDateFormat("h a", Locale.getDefault());
+        try {
+            Date date = isoFormat.parse(isoTime);
+            assert date != null;
+            return hourFormat.format(date);
+        } catch (ParseException e) {
+            Log.e("WeatherView", "Error formatting time to hour", e);
+            return "";
+        }
     }
 
 
