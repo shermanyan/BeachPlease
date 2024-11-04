@@ -2,7 +2,6 @@ package com.example.beachplease;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,8 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.w3c.dom.Text;
 
 public class UserProfileActivity extends AppCompatActivity {
     private View darkerBackground;
@@ -58,8 +55,6 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         userId = currentUser.getId();
-
-        Log.e("ProfileActivity", "Current user id: " + userId);
 
         // Debug log to see the current user
         Log.d("ProfileActivity", "Current User: " + currentUser);

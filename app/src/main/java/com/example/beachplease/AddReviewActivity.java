@@ -36,7 +36,15 @@ public class AddReviewActivity extends AppCompatActivity {
         // get beach id and user id
         Intent intent = getIntent();
         beachId = intent.getStringExtra("id");
-        userId = UserSession.getCurrentUser().getId();
+
+        try {
+            userId = UserSession.getCurrentUser().getId();
+
+        } catch (Exception e) {
+
+            Toast.makeText(this, "Please login to post a review", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
         reference = root.getReference("reviews");

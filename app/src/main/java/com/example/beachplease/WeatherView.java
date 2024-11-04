@@ -424,7 +424,6 @@ public class WeatherView extends LinearLayout {
     }
 
 
-
     public static String parseTime(String iso8601Time) {
         SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault());
         SimpleDateFormat amPmFormat = new SimpleDateFormat("h:mm a", Locale.getDefault());
@@ -498,9 +497,7 @@ public class WeatherView extends LinearLayout {
         String fDate = dateFormat.format(date);
 
 
-        String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude() +
-                "&longitude=" + beach.getLongitude() + "&current=temperature_2m&hourly=temperature_2m&temperature_unit=fahrenheit&timezone=auto&" +
-                "&start_date=" + fDate + "&end_date=" + fDate ;
+        String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&current=temperature_2m&hourly=temperature_2m&temperature_unit=fahrenheit&timezone=auto&" + "&start_date=" + fDate + "&end_date=" + fDate;
 
 
         executor.execute(() -> {
@@ -553,10 +550,7 @@ public class WeatherView extends LinearLayout {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String fDate = dateFormat.format(date);
 
-        String urlString = "https://marine-api.open-meteo.com/v1/marine?latitude=" + beach.getLatitude() +
-                "&longitude=" + beach.getLongitude() +
-                "&hourly=wave_height&length_unit=imperial&" +
-                "&start_date=" + fDate + "&end_date=" + fDate ;
+        String urlString = "https://marine-api.open-meteo.com/v1/marine?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&hourly=wave_height&length_unit=imperial&" + "&start_date=" + fDate + "&end_date=" + fDate;
 
         executor.execute(() -> {
             try {
