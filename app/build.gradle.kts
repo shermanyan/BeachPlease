@@ -42,6 +42,8 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
+    implementation(libs.play.services.places)
+    implementation(libs.play.services.fitness)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -57,6 +59,12 @@ dependencies {
 
     implementation (libs.lottie)
     implementation (libs.mpandroidchart)
+
+    implementation("com.google.android.libraries.places:places:3.5.0")
+
+
+
+
 
 
 

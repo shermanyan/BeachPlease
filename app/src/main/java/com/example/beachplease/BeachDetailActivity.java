@@ -71,7 +71,7 @@ public class BeachDetailActivity extends AppCompatActivity {
         weatherTab.setOnClickListener(this::switchTabs);
 
         // Initialize OverviewTab
-        overviewView = new OverviewView(mainContainer.getContext(), beach.getId());
+        overviewView = new OverviewView(mainContainer.getContext(), beach);
         mainContainer.addView(overviewView);
         overviewView.setVisibility(View.VISIBLE);
 
