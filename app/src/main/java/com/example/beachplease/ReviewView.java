@@ -1,6 +1,8 @@
 package com.example.beachplease;
 
 import android.content.Context;
+import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,12 +18,17 @@ public class ReviewView extends LinearLayout {
         init();
     }
 
+    public ReviewView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     private void init() {
         this.setOrientation(LinearLayout.VERTICAL);
         this.setVisibility(View.VISIBLE);
     }
 
     public void addReview(String username, String reviewText, String date, float rating) {
+
         // Inflate the review layout
         View reviewItem = LayoutInflater.from(getContext()).inflate(R.layout.review_item, this, false);
 
@@ -54,7 +61,9 @@ public class ReviewView extends LinearLayout {
         });
 
         // Add the review item to the container
+        this.init();
         this.addView(reviewItem);
+
     }
 
 }
