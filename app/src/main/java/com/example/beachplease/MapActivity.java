@@ -351,7 +351,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(8, 0, 8, 0);
             tagButton.setLayoutParams(params);
-            tagButton.setBackgroundColor(Color.LTGRAY);
+            tagButton.setBackgroundResource(R.drawable.tag_button_background);
             tagButton.setOnClickListener(v -> onTagButtonClick(tagButton, tag));
             tagLayout.addView(tagButton);
         }
@@ -360,12 +360,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     //Button onclick
     private void onTagButtonClick(Button button, String tag) {
         if (selectedTags.contains(tag)) {
+            //Already selected
             selectedTags.remove(tag);
-            button.setBackgroundColor(Color.LTGRAY); // Unselected (Gray)
+            button.setBackgroundResource(R.drawable.tag_button_background);
         } else {
+            //Not selected
             selectedTags.add(tag);
-            button.setBackgroundColor(Color.YELLOW); // Selected (Highlighted)
+            button.setBackgroundResource(R.drawable.tag_button_selected_background);
         }
+        button.invalidate();
+        //Refresh list
         filterBeachesByTags();
     }
 
