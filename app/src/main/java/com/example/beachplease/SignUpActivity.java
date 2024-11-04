@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 import android.widget.EditText;
 
 
@@ -34,10 +35,8 @@ public class SignUpActivity extends Activity{
     private String userName = "";
     private String email = "";
     private String password = "";
-    private String hashedPassword ="";
     private String confirmPassword = "";
     private static final String emailRegex = "^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
-    private String userId;
 
     private User user;
     private PasswordHash passwordHash;
@@ -45,8 +44,6 @@ public class SignUpActivity extends Activity{
     // Firebase
     private FirebaseDatabase root;
     private DatabaseReference reference;
-
-    // Declare FirebaseAuth instance
     private FirebaseAuth mAuth;
 
 
@@ -61,7 +58,6 @@ public class SignUpActivity extends Activity{
             return insets;
         });
 
-        user = new User(firstName, lastName, userName, email, password);
         passwordHash = new PasswordHash();
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -129,10 +125,15 @@ public class SignUpActivity extends Activity{
         TextInputLayout passwordLayout = findViewById(R.id.password);
         TextInputEditText passwordLayoutText = (TextInputEditText) passwordLayout.getEditText();
         password = passwordLayoutText.getText().toString();
+        int minPassLength = 6;
         if (password.isEmpty()) {
             passwordLayout.setError("Password is required");
             canRegister = false;
-        } else {
+        }else if(password.length() < minPassLength){
+            passwordLayout.setError("Password is too short");
+            Toast.makeText(this, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+            canRegister = false;
+        }else {
             passwordLayout.setError(null);
             passwordLayout.setHelperText(null);
         }
@@ -155,9 +156,11 @@ public class SignUpActivity extends Activity{
     }
 
     // Method to setup user using User Class
-    public void setupUserInfo() {
-        user.setFirstName(firstName);
+    public void setupUserInfo(String userId) {
 
+        user = new User(firstName, lastName, userName, email, userId);
+
+        user.setFirstName(firstName);
         user.setLastName(lastName);
 
         // Set username to User's first name is user did not input a username
@@ -168,38 +171,34 @@ public class SignUpActivity extends Activity{
         }
         user.setEmail(email);
 
-        // Hash password
-        hashedPassword = passwordHash.hashPassword((password));
+        storeUserInfoInDatabase(user);
 
-        user.setPassword(hashedPassword);
     }
 
     public void registerUser(View view) {
 
-        boolean isUserInfoValid = validateUser();
-
-        EditText message = findViewById(R.id.message);
-
-        if (!isUserInfoValid) {
-            message.setText("Try Again");
-        } else {
-
-            setupUserInfo();
-            message.setText("Sign Up was successful!");
-            userId = UUID.randomUUID().toString(); // Generate a unique ID
-            storeUserInfoInDatabase(userId);
-
-            openBeachDetailActivity(view);
-
+        if (validateUser()){
+            mAuth.createUserWithEmailAndPassword(email, password).
+                    addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            String userId = mAuth.getCurrentUser().getUid();
+                            setupUserInfo(userId);
+                            UserSession.login(new User(firstName, lastName, userName, email, userId));
+                            openMapActivity(view);
+                        }else{
+                            Log.e("FirebaseAuth", "registration failed: " + task.getException().getMessage());
+                        }
+                    });
         }
+
     }
 
 
-    public void storeUserInfoInDatabase(String userId) {
+    public void storeUserInfoInDatabase(User user) {
         root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
         reference = root.getReference("users");
 
-        reference.child(userId).setValue(user).addOnCompleteListener(task -> {
+        reference.child(user.getId()).setValue(user).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 // Successfully written to database
                 Log.d("Database", "User info saved successfully.");
@@ -211,13 +210,11 @@ public class SignUpActivity extends Activity{
     }
 
     // method to verify user signup and login
-    public void openBeachDetailActivity(View view){
-        String id = userId;
-        Intent intent = new Intent(this, BeachDetailActivity.class);
-        intent.putExtra("com.example.beachplease.MESSAGE", id);
+    public void openMapActivity(View view){
+
+        Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
 
 
 }
-

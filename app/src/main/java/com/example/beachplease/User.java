@@ -5,17 +5,17 @@ public class User {
     private String lastName;
     private String userName;
     private String email;
-    private String password;
+    private String id;
 
     // default Constructor
     public User() {}
 
-    public User(String firstName, String lastName, String userName, String email, String password) {
+    public User(String firstName, String lastName, String userName, String email, String id) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
         this.email = email;
-        this.password = password;
+        this.id = id;
     }
 
     // Getters and Setters
@@ -35,7 +35,7 @@ public class User {
 
     public void setEmail(String email) { this.email = email; }
 
-    public String getPassword() { return password; }
+    public String getId() { return id;}
 
-    public void setPassword(String password) { this.password = password; }
+    public void setId(String id) { this.id = id; }
 }

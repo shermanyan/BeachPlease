@@ -45,6 +45,8 @@
         <activity android:name=".AddReviewActivity" />
 
         <activity android:name=".UserProfileActivity" />
+
+        <activity android:name=".EditProfileActivity" />
     </application>
 
 
