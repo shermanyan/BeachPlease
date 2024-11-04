@@ -1,34 +1,43 @@
 package com.example.beachplease;
 
 public class Review {
-    private float rating;
-    private String comment;
-    private String userId;
     private String beachId;
+    private String date;
+    private String reviewText;
+    private float star;
+    private String userId;
 
-    // default Constructor
+
+    // Default constructor for Firebase
     public Review() {}
 
-    public Review(float rating, String comment, String userId, String beachId){
-        this.rating = rating;
-        this.comment = comment;
-        this.userId = userId;
+    public Review(String beachId, String date, String reviewText, float star, String userId) {
+
         this.beachId = beachId;
+        this.date = date;
+        this.reviewText = reviewText;
+        this.star = star;
+        this.userId = userId;
     }
 
-    public float getRating() { return rating; }
+    // Getters and Setters
+    public String getBeachId() { return beachId; }
+    public void setBeachId(String beachId) { this.beachId = beachId; }
 
-    public void setRating(int rating) { this.rating = rating; }
-
-    public String getComment() { return comment; }
-
-    public void setComment(String comment) { this.comment = comment; }
+    public String getDate() { return date; }  // New getter for date
+    public void setDate(String date) { this.date = date; }  // New setter for date
 
     public String getUserId() { return userId; }
-
     public void setUserId(String userId) { this.userId = userId; }
 
-    public String getBeachId() { return beachId; }
+    public float getStar() { return star; }
+    public void setStar(float star) { this.star = star; }
 
-    public void setBeachId(String beachId) { this.beachId = beachId; }
+    public String getReviewText() { return reviewText; }
+    public void setReviewText(String reviewText) { this.reviewText = reviewText; }
+
+
+
+
+
 }

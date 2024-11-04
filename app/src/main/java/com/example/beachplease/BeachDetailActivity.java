@@ -82,6 +82,9 @@ public class BeachDetailActivity extends AppCompatActivity {
         mainContainer.addView(writeReviewButton);
         writeReviewButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddReviewActivity.class);
+
+            String beachId = beach.getId();
+            intent.putExtra("id", beachId);
             startActivity(intent);
         });
         writeReviewButton.setVisibility(View.GONE);
