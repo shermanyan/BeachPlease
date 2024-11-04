@@ -1,5 +1,19 @@
 package com.example.beachplease;
 
+import com.google.android.gms.location.Priority;
+import android.content.IntentSender;
+import android.os.Looper;
+import androidx.annotation.Nullable;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+
 import android.util.Log;
 
 import android.content.Intent;
@@ -49,16 +63,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import android.widget.TextView;
+import android.view.View;
+
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private List<Beach> beaches;
     private Set<String> selectedTags = new HashSet<>();
+    private TextView loadingText;
+
+    private static final LatLng USC_LOCATION = new LatLng(34.0224, -118.2851);
 
     private LinearLayout tagLayout;
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private LatLng sampleLocation = new LatLng(34.0114, -118.4956); //Fabricated user location
+    private static final int REQUEST_CHECK_SETTINGS = 2;
+    private LatLng sampleLocation; //Fabricated user location
 
     //CA boundaries for zoom function
     private static final LatLngBounds CALIFORNIA_BOUNDS = new LatLngBounds(
@@ -70,10 +94,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
-        initializeBeaches();
+        loadingText = findViewById(R.id.loading_text);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        initializeBeaches();
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -101,66 +125,115 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         //Request permission runtime
         requestLocationPermission();
+
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        //Initialize to California bounds
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(CALIFORNIA_BOUNDS, 100));
+        //Freeze the screen
+        findViewById(R.id.loading_overlay).setVisibility(View.VISIBLE);
+//        loadingText.setVisibility(View.VISIBLE);
         //Location permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            getUserLocation();
+//            getUserLocation();
+            checkLocationSettings();
         } else {
-            Toast.makeText(this, "Location permission is required to show beaches nearby", Toast.LENGTH_SHORT).show();
+            requestLocationPermission();
+//            Toast.makeText(this, "Location permission is required to show beaches nearby", Toast.LENGTH_SHORT).show();
         }
 
 //        displayNearestBeaches(5);
     }
 
-    private void requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        } else {
-            getUserLocation();
-        }
+    private void checkLocationSettings() {
+        LocationRequest locationRequest = new LocationRequest.Builder(
+                Priority.PRIORITY_HIGH_ACCURACY, 1000)
+                .setMinUpdateIntervalMillis(500)
+                .build();
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
+
+        task.addOnSuccessListener(locationSettingsResponse -> getUserLocation());
+
+        task.addOnFailureListener(e -> {
+            if (e instanceof ResolvableApiException) {
+                try {
+                    ResolvableApiException resolvable = (ResolvableApiException) e;
+                    resolvable.startResolutionForResult(MapActivity.this, REQUEST_CHECK_SETTINGS);
+                } catch (IntentSender.SendIntentException sendEx) {
+                    Log.e("MapActivity", "Error showing location settings dialog", sendEx);
+                }
+            } else {
+                Toast.makeText(this, "Please enable location settings to view nearby beaches.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    private void requestLocationPermission() {
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);  // Call to super
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Check if permission is granted before calling getUserLocation
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    getUserLocation();
-                }
+                //Permission granted
+                checkLocationSettings();
             } else {
-                Toast.makeText(this, "Location permission denied.", Toast.LENGTH_SHORT).show();
+                //Permission denied
+                Toast.makeText(this, "Location permission denied. Defaulting to Grand Ave.", Toast.LENGTH_SHORT).show();
+//                fallbackToGrandAve();
             }
         }
     }
 
+
+
     private void getUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                sampleLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                                displayNearestBeaches(5);
-                            } else {
-                                Toast.makeText(MapActivity.this, "Unable to get your location", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+            LocationRequest locationRequest = new LocationRequest.Builder(
+                    Priority.PRIORITY_HIGH_ACCURACY, 1000)
+                    .setMinUpdateIntervalMillis(500)
+                    .setMaxUpdates(1)
+                    .build();
+
+            fusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult != null && !locationResult.getLocations().isEmpty()) {
+                        Location location = locationResult.getLastLocation();
+                        sampleLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        Log.d("MapActivity", "Fetched Location: " + sampleLocation);
+                        //Defreeze the screen
+                        findViewById(R.id.loading_overlay).setVisibility(View.GONE);
+//                        loadingText.setVisibility(View.GONE);
+                        displayNearestBeaches(5);
+//                        verifyAddress(sampleLocation);
+                    }
+                    fusedLocationClient.removeLocationUpdates(this);
+                }
+            }, Looper.getMainLooper());
         }
     }
+
+
 
     //Fabricated beach information, substitute with database operation after implemented
     private void initializeBeaches() {
@@ -189,7 +262,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 for (Beach beach : beaches) {
                     Log.d("MapActivity", "Beach added: " + beach.toString());
                 }
-                displayNearestBeaches(5);
+//                displayNearestBeaches(5);
             }
 
             @Override
@@ -212,6 +285,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //Pick beaches to zoom in
         List<Beach> nearestBeaches = sortedBeaches.subList(0, Math.min(count, sortedBeaches.size()));
 
+        // Log the names and distances of the 5 nearest beaches
+        for (Beach beach : nearestBeaches) {
+            double distance = distanceFrom(userLocation, new LatLng(beach.getLatitude(), beach.getLongitude()));
+            Log.d("MapActivity", "Nearest Beach: " + beach.getName() + ", Distance: " + distance + " meters");
+        }
         displayBeaches(beaches);
 
 //        Log.d("MapActivity", "Zooming to fit " + nearestBeaches.size() + " nearest beaches");

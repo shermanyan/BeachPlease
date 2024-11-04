@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -32,22 +33,50 @@
         android:layout_height="50dp"
         android:layout_below="@id/toolbar"
         android:background="#FFFFFF"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:contentDescription="Tag selection bar">
 
         <LinearLayout
             android:id="@+id/tagLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:contentDescription="Tags" />
     </HorizontalScrollView>
 
     <!-- Google map part -->
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tagBar"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        tools:layout="@layout/map_placeholder"
+        android:contentDescription="Map displaying beach locations" />
+
+    <!-- Loading overlay to freeze interaction -->
+    <FrameLayout
+        android:id="@+id/loading_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="visible"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Loading text with rectangular white background -->
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Loading..."
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:background="#FFFFFF"
+            android:padding="12dp"
+            android:elevation="4dp" />
+    </FrameLayout>
 
 </RelativeLayout>
