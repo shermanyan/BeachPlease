@@ -18,6 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ViewUserReviewsActivity extends AppCompatActivity {
 
     private DatabaseReference reference, beachReference;
@@ -59,13 +62,25 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
                 for (DataSnapshot reviewSnapshot : snapshot.getChildren()) {
                     Review review = reviewSnapshot.getValue(Review.class);
+
+                    List<String> imageUrls = new ArrayList<>();
+
+                    if (reviewSnapshot.child("imageUrls").exists()) {
+                        for (DataSnapshot urlSnapshot : reviewSnapshot.child("imageUrls").getChildren()) {
+                            String url = urlSnapshot.getValue(String.class);
+                            if (url != null) {
+                                imageUrls.add(url);
+                            }
+                        }
+                    }
+
                     if (review != null) {
 
                         if (userId.equals(review.getUserId())) {
 
                             // get review id from review
                             String reviewId = review.getBeachId();
-
+                            review.setImageUrls(imageUrls);
                             addReviewToView(review, reviewId);
                             count++;
                         }
