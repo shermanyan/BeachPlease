@@ -69,11 +69,12 @@
 
 
     <HorizontalScrollView
+        android:id="@+id/image_container_scroll"
         android:paddingVertical="10dp"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_gravity="center_vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/image_container"

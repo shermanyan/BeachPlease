@@ -1,51 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?><!-- res/layout/activity_write_review.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center|top"
-    android:orientation="vertical"
     android:padding="16dp">
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Write a Review"
-        android:textSize="25dp"
-        android:textStyle="bold" />
-
-
-    <!-- Review Text Input -->
-    <RatingBar
-        android:id="@+id/review_rating_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:numStars="5"
-        android:progressTint="@color/oceanblue"
-        android:scaleX="0.8"
-        android:scaleY="0.8"
-        android:stepSize="1" />
-
-
-    <EditText
-        android:id="@+id/review_text_input"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/rounded_box"
-        android:gravity="top"
-        android:hint="Share details of your experience at this place"
-        android:inputType="textMultiLine"
-        android:minHeight="100dp"
-        android:padding="8dp" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Write a Review"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <!-- Review Text Input -->
+        <RatingBar
+            android:id="@+id/review_rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:numStars="5"
+            android:progressTint="@color/oceanblue"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:stepSize="1" />
+
+        <EditText
+            android:id="@+id/review_text_input"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/rounded_box"
+            android:gravity="top"
+            android:hint="Share details of your experience at this place"
+            android:inputType="textMultiLine"
+            android:minHeight="100dp"
+            android:padding="8dp" />
+
+        <!-- Upload Images Section -->
+        <HorizontalScrollView
+            android:id="@+id/image_container_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginVertical="10dp"
+            android:paddingVertical="10dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/image_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal" />
+
+        </HorizontalScrollView>
+
+        <Button
+            android:id="@+id/upload_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_box"
+            android:text="Upload Images"
+            android:textColor="@color/dark_gray"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Cancel and Submit Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:gravity="end"
         android:orientation="horizontal"
         android:padding="10dp">
@@ -59,7 +93,7 @@
             android:background="@drawable/rounded_box"
             android:text="Cancel"
             android:textColor="@color/dark_gray"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <!-- Submit Button -->
@@ -69,11 +103,8 @@
             android:layout_height="40dp"
             android:background="@drawable/rounded_box_dark"
             android:text="Post"
-
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
-
-
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

@@ -98,7 +98,7 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String beachName = snapshot.getValue(String.class);
                 if (beachName != null) {
-
+                    review.setUsername(beachName);
                     reviewView.addReview(true, review);
                 }
             }

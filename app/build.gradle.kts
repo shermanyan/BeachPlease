@@ -30,10 +30,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    packaging {
+        resources {
+            excludes.add("META-INF/INDEX.LIST")
+        }
+    }
+
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -47,19 +53,17 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.com.google.firebase.firebase.analytics)
-    implementation (libs.play.services.maps.v1802)
-    implementation (libs.play.services.location.v2101)
-    implementation (libs.bcrypt)
-    implementation (libs.bcrypt)
-    implementation (libs.circleimageview)
-
+    implementation(libs.play.services.maps.v1802)
+    implementation(libs.play.services.location.v2101)
+    implementation(libs.bcrypt)
+    implementation(libs.circleimageview)
     implementation(libs.google.flexbox)
+    implementation(libs.lottie)
+    implementation(libs.mpandroidchart)
 
-    implementation (libs.lottie)
-    implementation (libs.mpandroidchart)
-
+    // Add Picasso for image loading
     implementation("com.squareup.picasso:picasso:2.8")
 
+    // Add Google Cloud Storage for image upload
+    implementation("com.google.cloud:google-cloud-storage:2.3.0")
 }

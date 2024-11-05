@@ -20,7 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class BeachDetailActivity extends AppCompatActivity {
 
@@ -176,17 +178,30 @@ public class BeachDetailActivity extends AppCompatActivity {
                     String reviewText = reviewSnapshot.child("reviewText").getValue(String.class);
                     Float stars = reviewSnapshot.child("stars").getValue(Float.class);
 
+                    List<String> imageUrls = new ArrayList<>();
+
+                    if (reviewSnapshot.child("imageUrls").exists()) {
+                        for (DataSnapshot urlSnapshot : reviewSnapshot.child("imageUrls").getChildren()) {
+                            String url = urlSnapshot.getValue(String.class);
+                            if (url != null) {
+                                imageUrls.add(url);
+                            }
+                        }
+                    }
+
                     //check if review match beach
                     if (beachId != null && beachId.equals(beach.getId()) && stars != null) {
                         //find user name in cache
                         if (userNameCache.containsKey(userId)) {
                             String userName = userNameCache.get(userId);
                             Review review = new Review(userName, beachId, date, reviewText, stars, userId);
+                            review.setImageUrls(imageUrls);
                             reviewView.addReview(review);
                         } else {
                             //get user name if not in cache from firebase
                             fetchUserName(userId, (userName) -> {
                                 Review review = new Review(userName, beachId, date, reviewText, stars, userId);
+                                review.setImageUrls(imageUrls);
                                 reviewView.addReview(review);
                                 userNameCache.put(userId, userName); // Cache the fetched name
                                 Log.d("BeachDetailActivity", "User full name: " + userName);

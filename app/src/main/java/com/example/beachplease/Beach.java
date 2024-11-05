@@ -3,6 +3,7 @@ package com.example.beachplease;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,6 @@ public class Beach implements Parcelable {
     private String formattedAddress;
     private List<String> hours;
     private Map<String, Integer> tagNumber;
-
 
     public Beach(String id, String name, double latitude, double longitude, List<String> tags,
                  String description, String formattedAddress, List<String> hours, Map<String, Integer> tagNumber) {
@@ -32,11 +32,11 @@ public class Beach implements Parcelable {
     }
 
     public Beach() {
-        //default constructor
+        // Default constructor
+        tagNumber = new HashMap<>(); // Initialize the map to avoid null issues
     }
 
     // Parcelable constructor
-
     protected Beach(Parcel in) {
         id = in.readString();
         name = in.readString();
@@ -46,7 +46,11 @@ public class Beach implements Parcelable {
         description = in.readString();
         formattedAddress = in.readString();
         hours = in.createStringArrayList();
-        tagNumber = in.readHashMap(Integer.class.getClassLoader());
+
+        // Initialize the map
+        tagNumber = new HashMap<>();
+        // Read the map from the Parcel
+        in.readMap(tagNumber, Integer.class.getClassLoader()); // Explicitly state the value type
     }
 
     public static final Creator<Beach> CREATOR = new Creator<Beach>() {
@@ -61,7 +65,6 @@ public class Beach implements Parcelable {
         }
     };
 
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
@@ -72,7 +75,7 @@ public class Beach implements Parcelable {
         dest.writeString(description);
         dest.writeString(formattedAddress);
         dest.writeStringList(hours);
-        dest.writeMap(tagNumber);
+        dest.writeMap(tagNumber); // Write the map to the Parcel
     }
 
     @Override
@@ -81,7 +84,6 @@ public class Beach implements Parcelable {
     }
 
     // Getters and setters
-
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
