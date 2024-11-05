@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
+import java.util.Map;
 
 public class Beach implements Parcelable {
     private String id;
@@ -11,13 +12,23 @@ public class Beach implements Parcelable {
     private double latitude;
     private double longitude;
     private List<String> tags;
+    private String description;
+    private String formattedAddress;
+    private List<String> hours;
+    private Map<String, Integer> tagNumber;
 
-    public Beach(String id, String name, double latitude, double longitude, List<String> tags) {
+
+    public Beach(String id, String name, double latitude, double longitude, List<String> tags,
+                 String description, String formattedAddress, List<String> hours, Map<String, Integer> tagNumber) {
         this.id = id;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.tags = tags;
+        this.description = description;
+        this.formattedAddress = formattedAddress;
+        this.hours = hours;
+        this.tagNumber = tagNumber;
     }
 
     public Beach() {
@@ -25,12 +36,17 @@ public class Beach implements Parcelable {
     }
 
     // Parcelable constructor
+
     protected Beach(Parcel in) {
         id = in.readString();
         name = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
         tags = in.createStringArrayList();
+        description = in.readString();
+        formattedAddress = in.readString();
+        hours = in.createStringArrayList();
+        tagNumber = in.readHashMap(Integer.class.getClassLoader());
     }
 
     public static final Creator<Beach> CREATOR = new Creator<Beach>() {
@@ -45,6 +61,7 @@ public class Beach implements Parcelable {
         }
     };
 
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
@@ -52,6 +69,10 @@ public class Beach implements Parcelable {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeStringList(tags);
+        dest.writeString(description);
+        dest.writeString(formattedAddress);
+        dest.writeStringList(hours);
+        dest.writeMap(tagNumber);
     }
 
     @Override
@@ -75,4 +96,16 @@ public class Beach implements Parcelable {
 
     public List<String> getTags() { return tags; }
     public void setTags(List<String> tags) { this.tags = tags; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getFormattedAddress() { return formattedAddress; }
+    public void setFormattedAddress(String formattedAddress) { this.formattedAddress = formattedAddress; }
+
+    public List<String> getHours() { return hours; }
+    public void setHours(List<String> hours) { this.hours = hours; }
+
+    public Map<String, Integer> getTagNumber() { return tagNumber; }
+    public void setTagNumber(Map<String, Integer> tagNumber) { this.tagNumber = tagNumber; }
 }

@@ -70,6 +70,9 @@ import android.widget.TextView;
 import android.view.View;
 import android.os.Handler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -175,7 +178,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     Log.e("MapActivity", "Error showing location settings dialog", sendEx);
                 }
             } else {
-                Toast.makeText(this, "Please enable location settings to view nearby beaches.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enable location settings to view nearby beaches", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -199,7 +202,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 checkLocationSettings();
             } else {
                 //Permission denied
-                Toast.makeText(this, "Location permission denied. Defaulting to Grand Ave.", Toast.LENGTH_SHORT).show();
+                requestLocationPermission();
+//                Toast.makeText(this, "Location permission denied. Defaulting to Grand Ave.", Toast.LENGTH_SHORT).show();
 //                fallbackToGrandAve();
             }
         }
@@ -251,19 +255,40 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     String name = snapshot.child("name").getValue(String.class);
                     Double latitude = snapshot.child("latitude").getValue(Double.class);
                     Double longitude = snapshot.child("longitude").getValue(Double.class);
-                    List<String> tags = new ArrayList<>();
 
+                    List<String> tags = new ArrayList<>();
                     for (DataSnapshot tagSnapshot : snapshot.child("tags").getChildren()) {
                         tags.add(tagSnapshot.getValue(String.class));
                     }
-                    Beach beach = new Beach(id, name, latitude, longitude, tags);
-                    beaches.add(beach);
-                }
 
-                for (Beach beach : beaches) {
-                    Log.d("MapActivity", "Beach added: " + beach.toString());
+
+                    Map<String, Integer> tagNumber = new HashMap<>();
+                    if (snapshot.hasChild("tagNumber")) {
+                        for (DataSnapshot tagNumSnapshot : snapshot.child("tagNumber").getChildren()) {
+                            tagNumber.put(tagNumSnapshot.getKey(), tagNumSnapshot.getValue(Integer.class));
+                        }
+                    }
+
+                    List<String> hours = new ArrayList<>();
+                    if (snapshot.hasChild("hours")) {
+                        for (DataSnapshot hourSnapshot : snapshot.child("hours").getChildren()) {
+                            hours.add(hourSnapshot.getValue(String.class));
+                        }
+                    }
+
+                    String formattedAddress = snapshot.hasChild("formattedAddress")
+                            ? snapshot.child("formattedAddress").getValue(String.class)
+                            : "";
+
+                    String description = snapshot.hasChild("description")
+                            ? snapshot.child("description").getValue(String.class)
+                            : "";
+
+                    Beach beach = new Beach(id, name, latitude, longitude, tags, description, formattedAddress, hours, tagNumber);
+                    beaches.add(beach);
+
+                    Log.d("MapActivity", "Beach added: " + beach.getName());
                 }
-//                displayNearestBeaches(5);
             }
 
             @Override
@@ -397,7 +422,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
         if (filteredBeaches.isEmpty()) {
-            Toast.makeText(this, "No beaches match the selected tags.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No beaches match the selected tags", Toast.LENGTH_SHORT).show();
             //Force refresh
             Marker dummyMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)));
             dummyMarker.remove();
