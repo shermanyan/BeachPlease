@@ -15,9 +15,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:weightSum="1"
-            android:gravity="center_vertical">
+            android:weightSum="1">
 
             <ImageView
                 android:layout_width="40dp"
@@ -29,26 +29,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_weight="1"
                 android:paddingVertical="4dp"
                 android:text="Tags"
                 android:textColor="@color/dark_gray"
-                android:textSize="20sp"
-                android:layout_weight="1" />
+                android:textSize="20sp" />
 
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/more_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end|bottom"
-            android:layout_marginEnd="20dp"
-            android:text="More"
-            android:padding="8dp"
-            android:textColor="@color/dark_gray"
-            android:textSize="16sp"
-            android:textStyle="bold" />
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/tag_container"
@@ -70,6 +59,17 @@
 
         </com.google.android.flexbox.FlexboxLayout>
 
+        <TextView
+            android:id="@+id/more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="20dp"
+            android:padding="8dp"
+            android:text="More"
+            android:textColor="@color/dark_gray"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -163,8 +163,7 @@
                 android:id="@+id/hours_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -324,14 +323,14 @@
             </LinearLayout>
 
             <TextView
-                android:layout_marginStart="47.5dp"
                 android:id="@+id/no_hour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="47.5dp"
                 android:text="No Data"
                 android:textColor="@color/dark_gray"
                 android:textSize="14sp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </LinearLayout>
 
