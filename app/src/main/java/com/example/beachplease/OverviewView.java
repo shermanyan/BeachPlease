@@ -33,6 +33,8 @@ public class OverviewView extends LinearLayout {
     private HashMap<String, Integer> tagNumber;
     private DatabaseReference beachRef;
     private final Beach beach;
+    private TextView moreButton;
+    private boolean showAllTags = false;
 
 
     public OverviewView(Context context, Beach beach) {
@@ -47,12 +49,15 @@ public class OverviewView extends LinearLayout {
         // Inflate the layout for the overview view
         LayoutInflater.from(context).inflate(R.layout.overview_view, this, true);
         tagContainer = findViewById(R.id.tag_container);
+        moreButton = findViewById(R.id.more_button);
 
         //reference to the beach tagNumber in database
         beachRef = FirebaseDatabase.getInstance().getReference("beaches").child(beach.getId());
 
         //initial tag counts and setup display
         loadInitialTagCounts();
+
+        moreButton.setOnClickListener(v -> toggleTagDisplay());
 
         ((TextView) findViewById(R.id.beach_address)).setText(beach.getFormattedAddress());
         ((TextView) findViewById(R.id.beach_description)).setText(beach.getDescription());
@@ -110,7 +115,8 @@ public class OverviewView extends LinearLayout {
                         tagNumber.put(tag, count);
                     }
                 }
-                displaySortedTags();
+                displayTags(false); // Show only top 2 tags initially
+//                displaySortedTags();
             }
 
             @Override
@@ -121,14 +127,16 @@ public class OverviewView extends LinearLayout {
     }
 
     //display tags sorted in descending order
-    private void displaySortedTags() {
+    private void displayTags(boolean showAll) {
         tagContainer.removeAllViews();
 
-        //sort tags
         List<Map.Entry<String, Integer>> sortedTags = new ArrayList<>(tagNumber.entrySet());
         Collections.sort(sortedTags, (a, b) -> b.getValue().compareTo(a.getValue()));
 
-        for (Map.Entry<String, Integer> entry : sortedTags) {
+        int tagsToShow = showAll ? sortedTags.size() : Math.min(2, sortedTags.size());
+
+        for (int i = 0; i < tagsToShow; i++) {
+            Map.Entry<String, Integer> entry = sortedTags.get(i);
             String tag = entry.getKey();
             int count = entry.getValue();
 
@@ -152,6 +160,17 @@ public class OverviewView extends LinearLayout {
 
             tagContainer.addView(tagItem);
         }
+        updateMoreButtonLabel();
+    }
+
+    private void updateMoreButtonLabel() {
+        moreButton.setText(showAllTags ? "Less" : "More");
+    }
+
+    //toggle text more less
+    private void toggleTagDisplay() {
+        showAllTags = !showAllTags;
+        displayTags(showAllTags);
     }
 
     private void updateTagBackground(View tagItem, int count) {
@@ -173,7 +192,7 @@ public class OverviewView extends LinearLayout {
         updateTopTags();
 
         //update display
-        displaySortedTags();
+        displayTags(showAllTags);
     }
 
     //to update tags representing the beaches based on tag numbers

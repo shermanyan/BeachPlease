@@ -64,6 +64,17 @@
             <!-- Include more tag items as needed -->
 
         </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:id="@+id/more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="More"
+            android:textSize="20sp"
+            android:textColor="@color/dark_gray"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:padding="8dp" />
     </LinearLayout>
 
     <!-- Information Section -->
