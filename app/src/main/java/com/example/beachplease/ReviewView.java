@@ -10,17 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 public class ReviewView extends LinearLayout {
 
     private static final int MAX_LINES_COLLAPSED = 4;
-
-//
-//    private final FirebaseDatabase root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
-//    private final DatabaseReference reference = root.getReference("reviews");
-
 
     public ReviewView(Context context) {
         super(context);
@@ -29,11 +21,11 @@ public class ReviewView extends LinearLayout {
 
     public ReviewView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     private void init() {
         this.setOrientation(LinearLayout.VERTICAL);
-        this.setVisibility(View.VISIBLE);
     }
 
     public void addReview(String username, String reviewText, String date, float rating) {
@@ -63,7 +55,7 @@ public class ReviewView extends LinearLayout {
         TextView reviewDate = reviewItem.findViewById(R.id.review_date);
         TextView reviewTextView = reviewItem.findViewById(R.id.review_text);
         RatingBar reviewStarRatingBar = reviewItem.findViewById(R.id.review_star_rating_bar);
-        TextView seeMoreText = reviewItem.findViewById(R.id.see_more); // Add "See More" TextView in XML
+        TextView seeMoreText = reviewItem.findViewById(R.id.see_more);
 
         // Set the review data
         reviewUsername.setText(username);
@@ -78,18 +70,15 @@ public class ReviewView extends LinearLayout {
         // Set up "See More" functionality
         seeMoreText.setOnClickListener(v -> {
             if (seeMoreText.getText().equals("See More")) {
-                reviewTextView.setMaxLines(Integer.MAX_VALUE); // Expand to show all lines
+                reviewTextView.setMaxLines(Integer.MAX_VALUE);
                 seeMoreText.setText("See Less");
             } else {
-                reviewTextView.setMaxLines(MAX_LINES_COLLAPSED); // Collapse to max lines
+                reviewTextView.setMaxLines(MAX_LINES_COLLAPSED);
                 seeMoreText.setText("See More");
             }
         });
 
-        // Add the review item to the container
-        this.init();
         this.addView(reviewItem);
-
     }
 
 }

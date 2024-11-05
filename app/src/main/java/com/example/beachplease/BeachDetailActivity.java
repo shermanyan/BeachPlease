@@ -42,8 +42,13 @@ public class BeachDetailActivity extends AppCompatActivity {
     private TextView reviewsTab;
     private TextView weatherTab;
 
+
     //variable caching names to resolve name-not-shown-in-reviews problem
     private final HashMap<String, String> userNameCache = new HashMap<>();
+
+    private enum Tab {
+        OVERVIEW, REVIEWS, WEATHER
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +78,6 @@ public class BeachDetailActivity extends AppCompatActivity {
         // Initialize OverviewTab
         overviewView = new OverviewView(mainContainer.getContext(), beach);
         mainContainer.addView(overviewView);
-        overviewView.setVisibility(View.VISIBLE);
 
         // Initialize Add review button
         writeReviewButton = LayoutInflater.from(mainContainer.getContext()).inflate(R.layout.add_review_button, mainContainer, false);
@@ -85,19 +89,18 @@ public class BeachDetailActivity extends AppCompatActivity {
             intent.putExtra("id", beachId);
             startActivity(intent);
         });
-        writeReviewButton.setVisibility(View.GONE);
 
         // Initialize ReviewView
         reviewView = new ReviewView(mainContainer.getContext());
         mainContainer.addView(reviewView);
-        reviewView.setVisibility(View.GONE);
 
         // Initialize WeatherView
         weatherView = new WeatherView(mainContainer.getContext(), beach);
         mainContainer.addView(weatherView);
-        weatherView.setVisibility(View.GONE);
 
-        retrieveBeachDetails();
+        retrieveBeachReviews();
+
+        setTabView(Tab.OVERVIEW);
     }
 
     private void switchTabs(View view) {
@@ -112,6 +115,10 @@ public class BeachDetailActivity extends AppCompatActivity {
             tab = Tab.OVERVIEW;
         }
 
+        setTabView(tab);
+    }
+
+    private void setTabView(Tab tab) {
         switch (tab) {
             case OVERVIEW:
                 overviewTab.setTextColor(ContextCompat.getColor(this, R.color.oceanblue));
@@ -143,14 +150,8 @@ public class BeachDetailActivity extends AppCompatActivity {
         }
     }
 
-    private enum Tab {
-        OVERVIEW,
-        REVIEWS,
-        WEATHER
-    }
 
-
-    private void retrieveBeachDetails() {
+    private void retrieveBeachReviews() {
 
         beachTitle.setText(beach.getName());
         DatabaseReference reviewsRef = root.getReference("reviews");
@@ -177,9 +178,9 @@ public class BeachDetailActivity extends AppCompatActivity {
                         } else {
                             //get user name if not in cache from firebase
                             fetchUserName(userId, (userName) -> {
-                                reviewView.addReview( userName, reviewText, date, stars);
+                                reviewView.addReview(userName, reviewText, date, stars);
                                 userNameCache.put(userId, userName); // Cache the fetched name
-                                Log.d("BeachDetailActivity", "User full name: "+userName);
+                                Log.d("BeachDetailActivity", "User full name: " + userName);
                             });
                         }
 
@@ -190,7 +191,7 @@ public class BeachDetailActivity extends AppCompatActivity {
 
                 //rating average
                 if (reviewCount > 0) {
-                    float averageRating = totalRating/reviewCount;
+                    float averageRating = totalRating / reviewCount;
                     beachRating.setText(String.format("%.1f", averageRating));
                     starRatingBar.setRating(averageRating);
                     numRatings.setText("(" + reviewCount + ")");
@@ -199,6 +200,7 @@ public class BeachDetailActivity extends AppCompatActivity {
                     starRatingBar.setRating(0f);
                     numRatings.setText("(0)");
                 }
+
             }
 
             @Override

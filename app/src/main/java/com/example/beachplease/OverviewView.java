@@ -2,11 +2,7 @@ package com.example.beachplease;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,29 +12,17 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.OpeningHours;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class OverviewView extends LinearLayout {
@@ -50,10 +34,6 @@ public class OverviewView extends LinearLayout {
     private DatabaseReference beachRef;
     private final Beach beach;
 
-    private PlacesClient placesClient;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private Handler uiHandler;
-
 
     public OverviewView(Context context, Beach beach) {
         super(context);
@@ -63,7 +43,6 @@ public class OverviewView extends LinearLayout {
 
     private void init(Context context) {
 
-        uiHandler = new Handler(Looper.getMainLooper());
 
         // Inflate the layout for the overview view
         LayoutInflater.from(context).inflate(R.layout.overview_view, this, true);
@@ -75,16 +54,31 @@ public class OverviewView extends LinearLayout {
         //initial tag counts and setup display
         loadInitialTagCounts();
 
-        // Get the address of the beach
-        String address = getAddressOfBeach();
+        ((TextView) findViewById(R.id.beach_address)).setText(beach.getFormattedAddress());
+        ((TextView) findViewById(R.id.beach_description)).setText(beach.getDescription());
 
-        // Fetch the beach details using the Places API
-        fetchPlaceDetails(address);
+        // Set hours
+        List<String> hours = beach.getHours();
+        if(hours.size() == 1){
+            findViewById(R.id.hours_container).setVisibility(View.GONE);
+            findViewById(R.id.no_hour).setVisibility(View.VISIBLE);
+
+        } else {
+
+            ((TextView)findViewById(R.id.monday_hours)).setText(hours.get(0));
+            ((TextView)findViewById(R.id.tuesday_hours)).setText(hours.get(1));
+            ((TextView)findViewById(R.id.wednesday_hours)).setText(hours.get(2));
+            ((TextView)findViewById(R.id.thursday_hours)).setText(hours.get(3));
+            ((TextView)findViewById(R.id.friday_hours)).setText(hours.get(4));
+            ((TextView)findViewById(R.id.saturday_hours)).setText(hours.get(5));
+            ((TextView)findViewById(R.id.sunday_hours)).setText(hours.get(6));
+
+        }
 
         findViewById(R.id.address_container).setOnLongClickListener(v -> {
 
             // Create a URI for the address
-            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(address));
+            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(beach.getFormattedAddress()));
 
             // Create an Intent to launch Google Maps
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -102,21 +96,6 @@ public class OverviewView extends LinearLayout {
 
     }
 
-    private String getAddressOfBeach() {
-        Geocoder geocoder = new Geocoder(this.getContext(), Locale.getDefault());
-        String addressLine = null;
-        try {
-            List<Address> addresses = geocoder.getFromLocation(beach.getLatitude(), beach.getLongitude(), 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                addressLine = addresses.get(0).getAddressLine(0);
-                ((TextView) findViewById(R.id.beach_address)).setText(addressLine);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return addressLine;
-    }
 
     //initial tag counts and display in descending order
     private void loadInitialTagCounts() {
@@ -210,106 +189,5 @@ public class OverviewView extends LinearLayout {
         //database update
         beachRef.child("tags").setValue(topTags);
     }
-
-    private void fetchPlaceDetails(String address) {
-        // Initialize Places API if not already done
-        if (!Places.isInitialized()) {
-            Places.initialize(getContext(), API_KEY);
-        }
-
-        PlacesClient placesClient = Places.createClient(getContext());
-
-        // Create a request for autocomplete predictions
-        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                .setQuery(address)
-                .build();
-
-        // Execute the request
-        placesClient.findAutocompletePredictions(request)
-                .addOnSuccessListener(response -> {
-                    List<AutocompletePrediction> predictions = response.getAutocompletePredictions();
-                    if (!predictions.isEmpty()) {
-                        String placeId = predictions.get(0).getPlaceId();
-                        fetchPlaceDetailsById(placeId);  // Fetch details using place ID
-                    } else {
-                        showToast("No matching place found for address");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    e.printStackTrace();
-                    showToast("Failed to fetch place ID");
-                });
-    }
-
-    // Helper method to show Toast messages
-    private void showToast(String message) {
-        // Ensure that Toast is shown on the UI thread
-        new Handler(Looper.getMainLooper()).post(() -> {
-            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-        });
-    }
-
-
-    private void fetchPlaceDetailsById(String placeId) {
-        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.OPENING_HOURS);
-        FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();
-
-        placesClient.fetchPlace(request)
-                .addOnSuccessListener(response -> {
-                    Place place = response.getPlace();
-                    updateOpeningHours(place.getOpeningHours());  // Custom method to update UI
-                })
-                .addOnFailureListener(e -> {
-                    uiHandler.post(() ->
-                            Toast.makeText(getContext(), "Failed to fetch place details", Toast.LENGTH_SHORT).show());
-                });
-    }
-
-
-
-// Method to update the opening hours in the UI
-    private void updateOpeningHours(OpeningHours openingHours) {
-        if (openingHours == null || openingHours.getWeekdayText() == null) {
-            Toast.makeText(getContext(), "No opening hours available", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        List<String> weekdayText = openingHours.getWeekdayText();
-
-        // Map weekday hours to each TextView based on their order (Sunday through Saturday)
-        if (weekdayText.size() == 7) {  // Ensure we have data for all days
-
-            // Sunday
-            TextView sundayHours = findViewById(R.id.sunday_hours);
-            sundayHours.setText(weekdayText.get(0));
-
-            // Monday
-            TextView mondayHours = findViewById(R.id.monday_hours);
-            mondayHours.setText(weekdayText.get(1));
-
-            // Tuesday
-            TextView tuesdayHours = findViewById(R.id.tuesday_hours);
-            tuesdayHours.setText(weekdayText.get(2));
-
-            // Wednesday
-            TextView wednesdayHours = findViewById(R.id.wednesday_hours);
-            wednesdayHours.setText(weekdayText.get(3));
-
-            // Thursday
-            TextView thursdayHours = findViewById(R.id.thursday_hours);
-            thursdayHours.setText(weekdayText.get(4));
-
-            // Friday
-            TextView fridayHours = findViewById(R.id.friday_hours);
-            fridayHours.setText(weekdayText.get(5));
-
-            // Saturday
-            TextView saturdayHours = findViewById(R.id.saturday_hours);
-            saturdayHours.setText(weekdayText.get(6));
-        } else {
-            Toast.makeText(getContext(), "Invalid opening hours data", Toast.LENGTH_SHORT).show();
-        }
-    }
-
 
 }
