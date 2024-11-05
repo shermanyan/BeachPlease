@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ViewUserReviewsActivity extends AppCompatActivity {
 
-    private DatabaseReference reference;
+    private DatabaseReference reference, beachReference;
     private ReviewView reviewView;
     private String userId;
     private int count;
@@ -34,6 +34,7 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
         FirebaseDatabase root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
         reference = root.getReference("reviews");
+        beachReference = root.getReference("beaches");
 
 
         reviewView = findViewById(R.id.review_view);
@@ -61,7 +62,11 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
                     if (review != null) {
 
                         if (userId.equals(review.getUserId())) {
-                            addReviewToView(review);
+
+                            // get review id from review
+                            String reviewId = review.getBeachId();
+
+                            addReviewToView(review, reviewId);
                             count++;
                         }
                     } else {
@@ -85,8 +90,23 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
     }
 
-    private void addReviewToView(Review review) {
-        String username = UserSession.getCurrentUser().getFirstName() + " " + UserSession.getCurrentUser().getLastName();
-        reviewView.addReview(true, username, review.getReviewText(), review.getDate(), review.getStars());
+    private void addReviewToView(Review review, String reviewId) {
+
+        // Retrieve the beach name from the beachReference using the reviewId
+        beachReference.child(reviewId).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String beachName = snapshot.getValue(String.class);
+                if (beachName != null) {
+
+                    reviewView.addReview(true, beachName, review.getReviewText(), review.getDate(), review.getStars());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ViewUserReviewsActivity.this, "Unable to get beach name.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
