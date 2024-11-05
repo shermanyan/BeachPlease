@@ -8,6 +8,7 @@
     app:cardElevation="0dp">
 
     <ImageView
+        android:id="@+id/review_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"

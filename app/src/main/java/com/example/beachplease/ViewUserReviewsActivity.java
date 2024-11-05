@@ -99,7 +99,7 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
                 String beachName = snapshot.getValue(String.class);
                 if (beachName != null) {
 
-                    reviewView.addReview(true, beachName, review.getReviewText(), review.getDate(), review.getStars());
+                    reviewView.addReview(true, review);
                 }
             }
 

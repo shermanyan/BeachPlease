@@ -181,11 +181,13 @@ public class BeachDetailActivity extends AppCompatActivity {
                         //find user name in cache
                         if (userNameCache.containsKey(userId)) {
                             String userName = userNameCache.get(userId);
-                            reviewView.addReview(userName, reviewText, date, stars);
+                            Review review = new Review(userName, beachId, date, reviewText, stars, userId);
+                            reviewView.addReview(review);
                         } else {
                             //get user name if not in cache from firebase
                             fetchUserName(userId, (userName) -> {
-                                reviewView.addReview(userName, reviewText, date, stars);
+                                Review review = new Review(userName, beachId, date, reviewText, stars, userId);
+                                reviewView.addReview(review);
                                 userNameCache.put(userId, userName); // Cache the fetched name
                                 Log.d("BeachDetailActivity", "User full name: " + userName);
                             });

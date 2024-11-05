@@ -69,29 +69,20 @@
 
 
     <HorizontalScrollView
+        android:paddingVertical="10dp"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_gravity="center_vertical"
         android:visibility="visible">
 
         <LinearLayout
+            android:id="@+id/image_container"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:padding="8dp">
+            >
 
-            <include
-                android:id="@+id/review_image"
-                layout="@layout/review_image" />
-
-            <include
-                android:id="@+id/review_image"
-                layout="@layout/review_image" />
-
-            <include
-                android:id="@+id/review_image"
-                layout="@layout/review_image" />
-
+            <!-- Add Images here-->
         </LinearLayout>
 
     </HorizontalScrollView>

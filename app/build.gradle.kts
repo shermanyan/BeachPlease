@@ -60,12 +60,6 @@ dependencies {
     implementation (libs.lottie)
     implementation (libs.mpandroidchart)
 
-    implementation("com.google.android.libraries.places:places:3.5.0")
-
-
-
-
-
-
+    implementation("com.squareup.picasso:picasso:2.8")
 
 }
