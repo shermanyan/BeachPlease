@@ -49,7 +49,7 @@ public class UserProfileActivity extends AppCompatActivity {
         if (currentUser == null) {
             Log.e("UserProfileActivity", "User not logged in. Redirecting to login.");
             //redirect to login screen
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             finish();
             return;
         }
