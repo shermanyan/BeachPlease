@@ -247,9 +247,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         beaches = new ArrayList<>();
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                beaches.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String id = snapshot.child("id").getValue(String.class);
                     String name = snapshot.child("name").getValue(String.class);
