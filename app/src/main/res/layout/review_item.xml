@@ -2,38 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/weather_roundedbox"
-    android:paddingVertical="10dp"
-    android:paddingHorizontal="10dp"
     android:layout_marginVertical="10dp"
-    >
+    android:background="@drawable/weather_roundedbox"
+    android:orientation="vertical"
+    android:paddingHorizontal="10dp"
+    android:paddingVertical="10dp">
 
     <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/review_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Liam Carter"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/dark_blue"
-        android:layout_marginEnd="16dp"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true" />
+        <TextView
+            android:id="@+id/review_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:text="Liam Carter"
+            android:textColor="@color/dark_blue"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/edit_review"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/outline_edit_24"
-        android:visibility="gone"/>
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/edit_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/outline_edit_24"
+            android:visibility="gone" />
+    </RelativeLayout>
     <!-- Username -->
 
 
@@ -51,22 +50,52 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:numStars="5"
-            android:rating="2.5"
-            android:stepSize="0.1"
             android:isIndicator="true"
-            android:progressTint="@color/oceanblue" />
+            android:numStars="5"
+            android:progressTint="@color/oceanblue"
+            android:rating="2.5"
+            android:stepSize="0.1" />
 
         <!-- Review Date -->
         <TextView
             android:id="@+id/review_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
             android:text="July 2024"
-            android:textSize="12sp"
             android:textColor="@color/dark_gray"
-            android:layout_marginEnd="10dp" />
+            android:textSize="12sp" />
     </LinearLayout>
+
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_gravity="center_vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <include
+                android:id="@+id/review_image"
+                layout="@layout/review_image" />
+
+            <include
+                android:id="@+id/review_image"
+                layout="@layout/review_image" />
+
+            <include
+                android:id="@+id/review_image"
+                layout="@layout/review_image" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
 
     <!-- Review Text -->
     <LinearLayout
@@ -74,25 +103,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+
         <TextView
             android:id="@+id/review_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="This is a review of the beach. It was a great experience and I would recommend it to anyone. The water was warm and the sand was soft. The beach was clean and the people were friendly. I will definitely be back again soon. This is a review of the beach. It was a great experience and I would recommend it to anyone. The water was warm and the sand was soft. The beach was clean and the people were friendly. I will definitely be back again soon."
-            android:textSize="16sp"
-            android:maxLines="4"
             android:ellipsize="end"
-            android:textColor="@color/dark_gray" />
+            android:maxLines="4"
+            android:text="This is a review of the beach. It was a great experience and I would recommend it to anyone. The water was warm and the sand was soft. The beach was clean and the people were friendly. I will definitely be back again soon. This is a review of the beach. It was a great experience and I would recommend it to anyone. The water was warm and the sand was soft. The beach was clean and the people were friendly. I will definitely be back again soon."
+            android:textColor="@color/dark_gray"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/see_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:layout_marginTop="4dp"
             android:text="See More"
-            android:textSize="14sp"
             android:textColor="@color/dark_gray"
-            android:textStyle="bold"
-            android:layout_marginTop="4dp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>
