@@ -98,10 +98,15 @@ public class BeachDetailActivity extends AppCompatActivity {
         weatherView = new WeatherView(mainContainer.getContext(), beach);
         mainContainer.addView(weatherView);
 
-        retrieveBeachReviews();
-
         setTabView(Tab.OVERVIEW);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        retrieveBeachReviews();
+    }
+
 
     private void switchTabs(View view) {
         Tab tab;
@@ -155,6 +160,8 @@ public class BeachDetailActivity extends AppCompatActivity {
 
         beachTitle.setText(beach.getName());
         DatabaseReference reviewsRef = root.getReference("reviews");
+
+        reviewView.clearReviews();
 
         reviewsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

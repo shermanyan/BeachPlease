@@ -81,4 +81,8 @@ public class ReviewView extends LinearLayout {
         this.addView(reviewItem);
     }
 
+    public void clearReviews() {
+        removeAllViews();
+    }
+
 }
