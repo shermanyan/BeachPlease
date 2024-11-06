@@ -1,0 +1,104 @@
+@startuml
+''https://plantuml.com/sequence-diagram
+'
+
+
+    class Beach {
+        - String id
+        - String name
+        - double latitude
+        - double longitude
+        - List<String> tags
+        - String description
+        - String formattedAddress
+        - List<String> hours
+        - Map<String, Integer> tagNumber
+
+        + getName(): String
+        + getLatitude(): float
+        + getLongitude(): float
+        + getTags(): int
+        + getDescription(): String
+        + getFormattedAddress(): float
+        + getHours(): String
+        + getTagNumber(): int
+
+    }
+
+    class User {
+        - String firstName
+        - String lastName
+        - String userName
+        - String email
+        - String id
+
+        + getFirstName(): String
+        + getLastName(): String
+        + getUsername(): String
+        + getEmail(): String
+        + addReview(Review): void
+        + editReview(Review): void
+    }
+
+    class Review {
+        - String beachId
+        - String date
+        - String reviewText
+        - float stars
+        - String userId
+        - List<String> imageUrls
+        - String username
+        - String reviewId
+        - User user
+        - Beach beach
+
+        + getBeachId(): String
+        + getDate(): Date
+        + getReviewText(): String
+        + getStars(): Float
+        + getUserId(): String
+        + getImageUrl(): String
+        + getUsername(): String
+        + getReviewId(): String
+    }
+
+    class Map{
+
+        - List<Beach> beaches
+        - Set<String> Tags
+        - GoogleMap mMap
+        - Pair<Float, Float> <Longitude, Latitude> coordinates
+        - Float LatLngBounds CALIFORNIA_BOUNDS
+
+        + initializeBeaches(): void
+        + displayNearestBeaches(int count): void
+        + distanceFrom(LatLng start, LatLng end): double
+        + displayBeaches(List<Beach> beachesToDisplay): void
+        + adjustMapZoom(List<Beach> beaches): void
+        + setupTagButtons(List<String> tags): void
+        + filterBeachesByTags(): void
+    }
+
+    enum WeatherData {
+        - double wave_height
+        - Integer weatherCode
+        - Integer high
+        - Integer low
+        - Integer precipitation
+        - Integer uvIndex
+        - String sunset
+        - String description
+        - Date date
+
+        + getCurrentWeather(): void
+        + getForecastWeather(): void
+    }
+
+
+
+Map o-- Beach
+User o-- Beach
+Beach o-- WeatherData
+Beach o-- Review
+
+@enduml
