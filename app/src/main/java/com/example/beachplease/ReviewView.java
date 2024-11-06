@@ -33,6 +33,7 @@ public class  ReviewView extends LinearLayout {
         this.setOrientation(LinearLayout.VERTICAL);
     }
 
+
     private void loadImages(List<String> imgUrls, View reviewItem) {
 
         if (imgUrls == null || imgUrls.isEmpty()) {
@@ -70,8 +71,7 @@ public class  ReviewView extends LinearLayout {
 
                 Intent intent = new Intent(getContext(), EditReviewActivity.class);
 
-                intent.putExtra("reviewText", review.getReviewText());
-                intent.putExtra("rating", review.getStars());
+                intent.putExtra("review", review);
                 getContext().startActivity(intent);
             });
         }

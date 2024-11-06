@@ -62,7 +62,7 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
                 for (DataSnapshot reviewSnapshot : snapshot.getChildren()) {
                     Review review = reviewSnapshot.getValue(Review.class);
-
+                    review.setReviewId(reviewSnapshot.getKey());
                     List<String> imageUrls = new ArrayList<>();
 
                     if (reviewSnapshot.child("imageUrls").exists()) {
