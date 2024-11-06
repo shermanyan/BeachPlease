@@ -72,6 +72,7 @@ import android.os.Handler;
 
 import java.util.HashMap;
 import java.util.Map;
+import android.view.ViewTreeObserver;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -98,7 +99,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        loadingText = findViewById(R.id.loading_text);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         initializeBeaches();
@@ -137,10 +137,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //Initialize to California bounds
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(CALIFORNIA_BOUNDS, 100));
-        //Freeze the screen
-        findViewById(R.id.loading_overlay).setVisibility(View.VISIBLE);
+
+        //Listener to wait for the map layout to be complete
+        final View mapView = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getView();
+
+        if (mapView != null) {
+            mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                    //Initialize to California bounds
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(CALIFORNIA_BOUNDS, 100));
+                }
+            });
+        }
+//        findViewById(R.id.loading_overlay).setVisibility(View.VISIBLE);
 //        loadingText.setVisibility(View.VISIBLE);
         //Location permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -202,7 +214,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 checkLocationSettings();
             } else {
                 //Permission denied
-                requestLocationPermission();
+//                requestLocationPermission();
 //                Toast.makeText(this, "Location permission denied. Defaulting to Grand Ave.", Toast.LENGTH_SHORT).show();
 //                fallbackToGrandAve();
             }

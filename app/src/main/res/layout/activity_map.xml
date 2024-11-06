@@ -60,23 +60,22 @@
         android:id="@+id/loading_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80000000"
+        android:background="#CC000000"
         android:visibility="visible"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:contentDescription="Loading screen, please wait.">
 
-        <!-- Loading text with rectangular white background -->
-        <TextView
-            android:id="@+id/loading_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Loading..."
-            android:textSize="18sp"
-            android:textColor="#000000"
-            android:background="#FFFFFF"
-            android:padding="12dp"
-            android:elevation="4dp" />
+    <!-- Lottie loading animation -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loading_animation"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        app:lottie_fileName="loading.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:contentDescription="Loading animation" />
     </FrameLayout>
 
 </RelativeLayout>
