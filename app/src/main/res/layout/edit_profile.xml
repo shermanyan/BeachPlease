@@ -32,20 +32,9 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/note"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="*You may leave any field empty to skip updating."
-        android:textColor="@color/oceanblue"
-        android:textSize="15sp"
-        android:textStyle="italic"
-        app:layout_constraintBottom_toTopOf="@+id/saveButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editPassword" />
 
+
+<!--    edit username-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editUsername"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -56,7 +45,8 @@
         app:boxStrokeColor="@color/oceanblue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/navbar">
+        app:layout_constraintTop_toBottomOf="@+id/navbar"
+        app:layout_constraintBottom_toTopOf="@id/editPassword">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -67,27 +57,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editEmail"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        app:boxBackgroundMode="outline"
-        app:boxStrokeColor="@color/oceanblue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editUsername">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:drawableStart="@drawable/email_icon"
-            android:drawablePadding="10dp"
-            android:textSize="15sp" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
+<!--    edit password-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editPassword"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -98,23 +68,65 @@
         app:boxStrokeColor="@color/oceanblue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editEmail">
+        app:layout_constraintTop_toBottomOf="@id/editUsername"
+        app:layout_constraintBottom_toTopOf="@id/confirmPassword">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:drawableStart="@drawable/lock_icon"
             android:drawablePadding="10dp"
+            android:inputType="textPassword"
+            android:hint="enter new password"
             android:textSize="15sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+<!--confirm password choice-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/confirmPassword"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/oceanblue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editPassword"
+        app:layout_constraintBottom_toTopOf="@id/note">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableStart="@drawable/lock_icon"
+            android:drawablePadding="10dp"
+            android:inputType="textPassword"
+            android:hint="enter new password again"
+            android:textSize="15sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="*You may skip updating either username or password."
+        android:textColor="@color/oceanblue"
+        android:textSize="15sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="45dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirmPassword" />
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="80dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="@color/oceanblue"
@@ -123,23 +135,13 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editPassword" />
+        app:layout_constraintTop_toBottomOf="@id/note" />
 
-    <TextView
-        android:id="@+id/success"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/rounded_button"
-        android:text="Edit was Successful!"
-        android:textColor="@color/oceanblue"
-        android:textSize="20sp"
-        android:textStyle="italic"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/saveButton" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+

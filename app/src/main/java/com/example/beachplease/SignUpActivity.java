@@ -39,7 +39,6 @@ public class SignUpActivity extends Activity{
     private static final String emailRegex = "^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
 
     private User user;
-    private PasswordHash passwordHash;
 
     // Firebase
     private FirebaseDatabase root;
@@ -58,7 +57,6 @@ public class SignUpActivity extends Activity{
             return insets;
         });
 
-        passwordHash = new PasswordHash();
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
     }
@@ -184,8 +182,10 @@ public class SignUpActivity extends Activity{
                             String userId = mAuth.getCurrentUser().getUid();
                             setupUserInfo(userId);
                             UserSession.login(new User(firstName, lastName, userName, email, userId));
+                            Toast.makeText(SignUpActivity.this, "Sign up successful", Toast.LENGTH_SHORT).show();
                             openMapActivity(view);
                         }else{
+                            Toast.makeText(SignUpActivity.this, "Failed to sign up: email address is already taken", Toast.LENGTH_SHORT).show();
                             Log.e("FirebaseAuth", "registration failed: " + task.getException().getMessage());
                         }
                     });

@@ -1,34 +1,36 @@
 package com.example.beachplease;
 
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private String userID;
-
     private TextInputLayout newUsernameLayout;
     private TextInputEditText newUsernameText;
-    private TextInputLayout newEmailLayout;
-    private TextInputEditText newEmailText;
+
     private TextInputLayout newPasswordLayout;
-    private TextInputEditText newPassText;
-    private PasswordHash passwordHash;
+    private TextInputEditText newPasswordText;
+
+    private TextInputLayout confirmNewPasswordLayout;
+    private TextInputEditText confirmNewPasswordText;
+
     private User currentUser;
-    private TextView successMessage;
-    private FirebaseDatabase root;
-    private DatabaseReference reference;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,45 +38,29 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.edit_profile);
 
         // Initialize Firebase
-        root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
-        reference = root.getReference("users");
+        mAuth = FirebaseAuth.getInstance();
 
-        // Initialize PasswordHash
-        passwordHash = new PasswordHash();
-
-        // Initialize Views
         findViewById(R.id.returnIcon).setOnClickListener(this::returnToProfile);
-        successMessage = findViewById(R.id.success);
 
         // Initialize Input Fields
         newUsernameLayout = findViewById(R.id.editUsername);
         newUsernameText = (TextInputEditText) newUsernameLayout.getEditText();
 
-        newEmailLayout = findViewById(R.id.editEmail);
-        newEmailText = (TextInputEditText) newEmailLayout.getEditText();
+        newPasswordLayout = findViewById(R.id.editPassword); // For New Password
+        newPasswordText = (TextInputEditText) newPasswordLayout.getEditText();
 
-        newPasswordLayout = findViewById(R.id.editPassword);
-        newPassText = (TextInputEditText) newPasswordLayout.getEditText();
-
-        // receive userId from intent
-        Intent intent = getIntent();
-        userID = intent.getStringExtra("com.example.beachplease.MESSAGE");
-        Log.e("EditProfileActivity", "Current user id: " + userID);
+        confirmNewPasswordLayout = findViewById(R.id.confirmPassword); // For Confirm New Password
+        confirmNewPasswordText = (TextInputEditText) confirmNewPasswordLayout.getEditText();
 
         // Get current user
         currentUser = UserSession.getCurrentUser();
         if (currentUser == null) {
             Log.e("EditProfileActivity", "Current User is null!");
-            // Handle the error - maybe redirect to login
             return;
         }
 
-        // Optional: Pre-fill fields with current values
         if (currentUser.getUserName() != null) {
             newUsernameText.setHint(currentUser.getUserName());
-        }
-        if (currentUser.getEmail() != null) {
-            newEmailText.setHint(currentUser.getEmail());
         }
     }
 
@@ -90,41 +76,50 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         String newUsername = newUsernameText.getText() != null ? newUsernameText.getText().toString().trim() : "";
-        String newEmail = newEmailText.getText() != null ? newEmailText.getText().toString().trim() : "";
-        String newPassword = "";
+        String newPassword = newPasswordText.getText() != null ? newPasswordText.getText().toString().trim() : "";
+        String confirmNewPassword = confirmNewPasswordText.getText() != null ? confirmNewPasswordText.getText().toString().trim() : "";
 
-        if (newPassText.getText() != null) {
-            String tempPass = newPassText.getText().toString().trim();
-            if (!tempPass.isEmpty()) {
-                newPassword = passwordHash.hashPassword(tempPass);
-            }
-        }
-
-        DatabaseReference userRef = reference.child(currentUser.getId());
+        DatabaseReference userRef = FirebaseDatabase.getInstance("https://your-firebase-database-url").getReference("users").child(currentUser.getId());
         boolean successful = false;
 
-        if (!newUsername.isEmpty()) {
+        // Update Username in Database
+        if (!newUsername.isEmpty() && !newUsername.equals(currentUser.getUserName())) {
             userRef.child("userName").setValue(newUsername);
             currentUser.setUserName(newUsername);
+            Toast.makeText(this, "username updated successfully", Toast.LENGTH_SHORT).show();
             successful = true;
         }
 
-        if (!newEmail.isEmpty()) {
-            userRef.child("email").setValue(newEmail);
-            currentUser.setEmail(newEmail);
+        // Update Password
+        if (!newPassword.isEmpty() && newPassword.equals(confirmNewPassword)) {
+            updatePassword(newPassword, view);
             successful = true;
+        } else if (!newPassword.equals(confirmNewPassword)) {
+            Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
         }
-
 
         if (successful) {
-            displayMessage();
-
+            Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void displayMessage() {
-        successMessage.setVisibility(View.VISIBLE);
+    private void updatePassword(String newPassword, View view) {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        user.updatePassword(newPassword)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Password updated successfully", Toast.LENGTH_SHORT).show();
+                        returnToProfile(view);
+                    } else {
+                        Toast.makeText(this, "Failed to update password. Please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
-
-
 }
+
+
+
+
+
+
