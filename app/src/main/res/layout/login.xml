@@ -20,22 +20,21 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginemail"
-        android:layout_width="0dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/loginpassword"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="200dp"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/oceanblue"
         app:helperText=""
         app:helperTextTextColor="#F00000"
-        app:boxStrokeColor="@color/oceanblue"
-        app:boxBackgroundMode="outline"
-        android:layout_marginTop="200dp"
-        >
+        app:layout_constraintBottom_toTopOf="@id/loginpassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="300dp"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableStart="@drawable/email_icon"
             android:drawablePadding="10dp"
@@ -46,28 +45,26 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginpassword"
-        android:layout_width="0dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/loginemail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        app:boxBackgroundMode="outline"
         app:boxStrokeColor="@color/oceanblue"
         app:helperText=""
         app:helperTextTextColor="#F00000"
-        app:boxBackgroundMode="outline"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginemail">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="300dp"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableStart="@drawable/lock_icon"
             android:drawablePadding="10dp"
             android:hint="Password"
-            android:textSize="15sp"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textSize="15sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
