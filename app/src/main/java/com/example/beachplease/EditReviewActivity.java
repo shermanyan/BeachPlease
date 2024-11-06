@@ -18,18 +18,14 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
@@ -69,6 +65,8 @@ public class EditReviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         review = intent.getParcelableExtra("review");
 
+
+
         root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
         reference = root.getReference("reviews");
 
@@ -97,9 +95,7 @@ public class EditReviewActivity extends AppCompatActivity {
             if (reviewText.isEmpty()) {
                 Toast.makeText(this, "Review text cannot be empty.", Toast.LENGTH_SHORT).show();
             } else {
-                findReviewIdByText(reviewText, new ReviewIdCallback() {
-                    @Override
-                    public void onReviewIdFound(String reviewId) {
+
                         // Upload images first
                         uploadImages(new ImageUploadCallback() {
                             @Override
@@ -109,8 +105,8 @@ public class EditReviewActivity extends AppCompatActivity {
                                 allImageUrls.addAll(newImgUrls);
 
                                 // Once images are uploaded, update the database
-                                updateDatabase(reviewId, rating, reviewText, allImageUrls);
-                                Log.d("EditReviewActivity", "Review updated successfully");
+                                updateDatabase(review.getReviewId(), rating, reviewText, allImageUrls);
+                                Log.d("ßEditReviewActivity", "Review updated successfully");
                             }
 
                             @Override
@@ -120,16 +116,20 @@ public class EditReviewActivity extends AppCompatActivity {
                         });
                     }
 
-                    @Override
-                    public void onReviewIdNotFound() {
-                        runOnUiThread(() -> Toast.makeText(EditReviewActivity.this, "Review not found.", Toast.LENGTH_SHORT).show());
-                    }
-                });
-            }
+
         });
 
 
         findViewById(R.id.review_cancel_button).setOnClickListener(v -> finish());
+
+        findViewById(R.id.delete_review).setOnClickListener(v -> {
+            new AlertDialog.Builder(EditReviewActivity.this)
+                    .setMessage("Are you sure you want to delete this review?")
+                    .setPositiveButton("Yes", (dialog, which) -> deleteReview())
+                    .setNegativeButton("No", null)
+                    .show();
+        });
+
     }
 
     private void updateDatabase(String reviewId, float rating, String reviewText, List<String> imgUrls) {
@@ -216,7 +216,6 @@ public class EditReviewActivity extends AppCompatActivity {
         }
         container.addView(imageViewLayout);
 
-        // Set long-click listener to remove image
         imageView.setOnLongClickListener(v -> {
             new AlertDialog.Builder(EditReviewActivity.this)
                     .setMessage("Do you want to delete this image?")
@@ -239,7 +238,6 @@ public class EditReviewActivity extends AppCompatActivity {
                     String contentType = getContentResolver().getType(imageUri);
                     InputStream inputStream = getContentResolver().openInputStream(imageUri);
 
-                    // Upload the image
                     storage.create(
                             Blob.newBuilder("beachplease_review_images", objectName)
                                     .setContentType(contentType)
@@ -248,10 +246,8 @@ public class EditReviewActivity extends AppCompatActivity {
                     );
                     inputStream.close();
 
-                    // Add the uploaded image URL to the list
                     newImageUrls.add("https://storage.googleapis.com/beachplease_review_images/" + objectName);
 
-                    // Check if all images are uploaded
                     if (newImageUrls.size() == newImageUris.size()) {
                         runOnUiThread(() -> callback.onUploadComplete(newImageUrls));
                     }
@@ -263,32 +259,25 @@ public class EditReviewActivity extends AppCompatActivity {
         }
     }
 
+    private void deleteReview() {
+        String reviewId = review.getReviewId();
 
-    private void findReviewIdByText(String reviewText, ReviewIdCallback callback) {
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot reviewSnapshot : snapshot.getChildren()) {
-                    String currentReviewText = reviewSnapshot.child("reviewText").getValue(String.class);
-                    if (reviewText.equals(currentReviewText)) {
-                        String reviewId = reviewSnapshot.getKey();
-                        callback.onReviewIdFound(reviewId);
-                        return;
-                    }
-                }
-                callback.onReviewIdNotFound();
-            }
+        Log.d("EditReviewActivity", "Deleting review with ID: " + reviewId);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                callback.onReviewIdNotFound();
-            }
-        });
-    }
 
-    interface ReviewIdCallback {
-        void onReviewIdFound(String reviewId);
-        void onReviewIdNotFound();
+        if (reviewId != null && !reviewId.isEmpty()) {
+            reference.child(reviewId).removeValue()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(EditReviewActivity.this, "Review deleted successfully", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(EditReviewActivity.this, "Failed to delete review", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            Toast.makeText(EditReviewActivity.this, "Review ID not found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     interface ImageUploadCallback {

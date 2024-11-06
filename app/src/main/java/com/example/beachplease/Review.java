@@ -45,6 +45,7 @@ public class Review implements Parcelable {
         userId = in.readString();
         imageUrls = in.createStringArrayList();
         username = in.readString();
+        reviewId = in.readString();
     }
 
     public static final Creator<Review> CREATOR = new Creator<Review>() {
@@ -73,6 +74,7 @@ public class Review implements Parcelable {
         dest.writeString(userId);
         dest.writeStringList(imageUrls);
         dest.writeString(username);
+        dest.writeString(reviewId);
     }
 
     // Getters and Setters

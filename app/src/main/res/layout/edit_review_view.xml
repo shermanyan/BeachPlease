@@ -28,13 +28,13 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/delete_review"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="end"
                 android:contentDescription="delete"
-                android:src="@drawable/outline_delete_outline_24"
-                android:layout_gravity="end" />
+                android:src="@drawable/outline_delete_outline_24" />
         </LinearLayout>
-
 
 
         <!-- Review Text Input -->

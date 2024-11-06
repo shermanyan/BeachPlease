@@ -62,7 +62,7 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
 
                 for (DataSnapshot reviewSnapshot : snapshot.getChildren()) {
                     Review review = reviewSnapshot.getValue(Review.class);
-                    review.setReviewId(reviewSnapshot.getKey());
+
                     List<String> imageUrls = new ArrayList<>();
 
                     if (reviewSnapshot.child("imageUrls").exists()) {
@@ -74,18 +74,12 @@ public class ViewUserReviewsActivity extends AppCompatActivity {
                         }
                     }
 
-                    if (review != null) {
-
-                        if (userId.equals(review.getUserId())) {
-
-                            // get review id from review
-                            String reviewId = review.getBeachId();
-                            review.setImageUrls(imageUrls);
-                            addReviewToView(review, reviewId);
-                            count++;
-                        }
-                    } else {
-                        Log.d("ViewUserReviewsActivity", "Null review found at snapshot: " + reviewSnapshot.getKey());
+                    if (userId.equals(review.getUserId())) {
+                        review.setReviewId(reviewSnapshot.getKey());
+                        Log.d("Review", "Review ID: " + review.getReviewId());
+                        review.setImageUrls(imageUrls);
+                        addReviewToView(review, review.getBeachId());
+                        count++;
                     }
                 }
 
