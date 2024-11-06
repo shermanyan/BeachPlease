@@ -40,7 +40,6 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class WeatherView extends LinearLayout {
 
     protected static class WeatherUtil {
@@ -119,7 +118,6 @@ public class WeatherView extends LinearLayout {
         }
 
         public static int toFahrenheit(int celsius) {
-
             return (celsius * 9 / 5 + 32);
         }
     }
@@ -129,9 +127,7 @@ public class WeatherView extends LinearLayout {
         private TextView weatherHigh;
         private TextView weatherLow;
         private LottieAnimationView weatherIcon;
-
         public WeatherData weatherData = new WeatherData();
-
 
         public ForecastItem(Context context, WeatherData weatherData) {
             super(context);
@@ -145,7 +141,6 @@ public class WeatherView extends LinearLayout {
             weatherIcon.setAnimation(WeatherUtil.getWeatherAnimationFile(weatherData.weatherCode)); // Set actual weather icon based on data
         }
 
-
         private void init(Context context) {
             LayoutInflater.from(context).inflate(R.layout.forecast_item, this, true);
             weatherDay = findViewById(R.id.weather_day);
@@ -153,11 +148,9 @@ public class WeatherView extends LinearLayout {
             weatherLow = findViewById(R.id.weather_low);
             weatherIcon = findViewById(R.id.weather_icon);
         }
-
-
     }
 
-    private static class WeatherData {
+    public static class WeatherData {
         public double wave_height;
         public Integer weatherCode;
         public Integer high;
@@ -192,7 +185,6 @@ public class WeatherView extends LinearLayout {
     private TextView sunsetTimeText;
     private TextView dayOfWeekText;
 
-
     private final Beach beach;
     private final List<ForecastItem> forecastList;
 
@@ -217,7 +209,6 @@ public class WeatherView extends LinearLayout {
         this.beach = beach;
 
         init(context);
-
     }
 
     private void init(Context context) {
@@ -228,7 +219,6 @@ public class WeatherView extends LinearLayout {
         createView(context);
         getCurrentWeather();
         getForecastWeather();
-
 
         temperatureTab = findViewById(R.id.tab_temperature);
         waveHeightTab = findViewById(R.id.tab_waveheight);
@@ -364,7 +354,6 @@ public class WeatherView extends LinearLayout {
 
     }
 
-
     private void getForecastWeather() {
         String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,uv_index_max,sunset&timezone=auto";
         String urlString2 = "https://marine-api.open-meteo.com/v1/marine?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&daily=wave_height_max&timezone=auto";
@@ -464,22 +453,19 @@ public class WeatherView extends LinearLayout {
         chart.getAxisRight().setEnabled(false);
         chart.setScaleEnabled(false);
         chart.setDoubleTapToZoomEnabled(false);
-        chart.setDragEnabled(true); // Enable dragging
-        chart.setVisibleXRangeMaximum(2); // Set maximum visible range for X-axis to control how much is visible at once
+        chart.setDragEnabled(true);
+        chart.setVisibleXRangeMaximum(2);
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
 
-        // Customize Left Y-axis
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setGranularity(1f);
 
-        // Optionally customize other Y-axis properties
-        leftAxis.setDrawLabels(true); // Enable Y-axis labels if not already enabled
-        leftAxis.setLabelCount(5, true); // Specify how many labels to show on the Y-axis
+        leftAxis.setDrawLabels(true);
+        leftAxis.setLabelCount(5, true);
     }
-
 
     private void updateTables() {
         Calendar cal = Calendar.getInstance();
@@ -496,9 +482,10 @@ public class WeatherView extends LinearLayout {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String fDate = dateFormat.format(date);
 
-
-        String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&current=temperature_2m&hourly=temperature_2m&temperature_unit=fahrenheit&timezone=auto&" + "&start_date=" + fDate + "&end_date=" + fDate;
-
+        String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" + beach.getLatitude()
+                + "&longitude=" + beach.getLongitude()
+                + "&current=temperature_2m&hourly=temperature_2m&temperature_unit=fahrenheit&timezone=auto&"
+                + "&start_date=" + fDate + "&end_date=" + fDate;
 
         executor.execute(() -> {
             try {
@@ -515,7 +502,6 @@ public class WeatherView extends LinearLayout {
                     entries.add(new Entry((float) i, (float) temperatureData.getDouble(i)));
                 }
 
-
                 post(() -> {
                     LineDataSet dataSet = new LineDataSet(entries, "Temperature (°F)");
                     dataSet.setColor(ContextCompat.getColor(getContext(), R.color.oceanblue));
@@ -523,12 +509,10 @@ public class WeatherView extends LinearLayout {
 
                     dataSet.setValueTextColor(ContextCompat.getColor(getContext(), R.color.black));
                     dataSet.setValueTextSize(15f);
-
                     dataSet.setLineWidth(2f);
                     dataSet.setCircleRadius(1f);
                     dataSet.setDrawCircleHole(false);
                     dataSet.setDrawValues(false);
-
 
                     LineData lineData = new LineData(dataSet);
 
@@ -550,7 +534,10 @@ public class WeatherView extends LinearLayout {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String fDate = dateFormat.format(date);
 
-        String urlString = "https://marine-api.open-meteo.com/v1/marine?latitude=" + beach.getLatitude() + "&longitude=" + beach.getLongitude() + "&hourly=wave_height&length_unit=imperial&" + "&start_date=" + fDate + "&end_date=" + fDate;
+        String urlString = "https://marine-api.open-meteo.com/v1/marine?latitude=" + beach.getLatitude()
+                + "&longitude=" + beach.getLongitude()
+                + "&hourly=wave_height&length_unit=imperial&"
+                + "&start_date=" + fDate + "&end_date=" + fDate;
 
         executor.execute(() -> {
             try {
@@ -567,7 +554,6 @@ public class WeatherView extends LinearLayout {
                     entries.add(new Entry(i, (float) waveHeightData.getDouble(i)));
                 }
 
-                // Update UI on the main thread
                 post(() -> {
                     LineDataSet dataSet = new LineDataSet(entries, "Wave Height (ft)");
                     dataSet.setColor(ContextCompat.getColor(getContext(), R.color.oceanblue));
@@ -595,7 +581,6 @@ public class WeatherView extends LinearLayout {
             }
         });
     }
-
 
     private String formatTimeToHour(String isoTime) {
         SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault());
