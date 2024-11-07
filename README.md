@@ -14,7 +14,6 @@ BeachPlease is a mobile application that allows users to view and interact with 
 - **Beach Reviews**: View, add, edit, and delete reviews, including star ratings and comments.
 - **Beach Tags**: Users can tag beaches by specific activities (e.g., swimming, sunbathing, surfing), enabling others to filter and find beaches that suit their preferences.
 
----
 
 ## Getting Started
 
