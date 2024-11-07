@@ -24,10 +24,27 @@ BeachPlease is a mobile application that allows users to view and interact with 
 4. Wait for the map to load and you are all set
 
 
-### Requirements
+## Requirements
+
+### Development Requirements
 - **Android Studio** (Koala or newer)
 - **Android SDK** (API level 35+)
 - **Java** (for Android development)
-- **Google Cloud Storage** (for image storage)
 - **Firebase** (for database and authentication)
+- **Google Cloud Storage** (for image storage)
+
+### Run-time Requirements
+- **Internet Connection** (required for fetching map, syncing with the Firebase database, and uploading images to Google Cloud Storage)
+- **Google Play Services** (for map display)
+- **Location Data** (to display nearby beaches and enable map-related features)
+- **Android OS Version** (requires Android 12 (API level 35) or newer)
+
+## Tested Devices
+- **Google Pixel 8 Pro**
+- **Google Pixel 8 Fold**
   
+## Authors
+* Steven Wang | [bwang442@usc.edu](mailto:shermany@usc.edu) | [iotsak1r](https://github.com/iotsak1r)
+* Sherman Yan | [shermany@usc.edu](mailto:shermany@usc.edu) | [shermanyan](https://github.com/shermanyan)
+* Mikael Yikum | [yikum@usc.edu](mailto:yikum@usc.edu) | [YikumMikael](https://github.com/YikumMikael)
+
