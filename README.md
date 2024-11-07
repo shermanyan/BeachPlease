@@ -11,7 +11,7 @@ BeachPlease is a mobile application that allows users to view and interact with 
 - **Filtering**: Filter beaches by activity tags.
 - **Beach Information**: Access detailed beach info including hours, weather, and real-time conditions provided by [open-meteo](https://open-meteo.com/).
 - **Forecasts**: 7-day forecasts with high/low temperatures, UV index, and wave height.
-- **Beach Reviews**: View, add, edit, and delete reviews, including star ratings and comments.
+- **Beach Reviews**: View, add, edit, and delete reviews, including star ratings, comments, and photos.
 - **Beach Tags**: Users can tag beaches by specific activities (e.g., swimming, sunbathing, surfing), enabling others to filter and find beaches that suit their preferences.
 
 
