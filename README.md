@@ -23,6 +23,10 @@ BeachPlease is an Android application that allows users to view and interact wit
 3. Allow the app to access the device location when prompt
 4. Wait for the map to load and you are all set
 
+#### Sample User Login
+Username: mj@gmail.com
+Password: heehee
+
 
 ## Requirements
 
