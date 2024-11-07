@@ -2,7 +2,7 @@
 
 
 ### Summary
-BeachPlease is a mobile application that allows users to view and interact with beach-related information across Southern California. The app provides real-time beach conditions, activities, user reviews, and tagging features, helping users choose beaches that fit their interests.
+BeachPlease is an Android application that allows users to view and interact with beach-related information across Southern California. The app provides real-time beach conditions, activities, user reviews, and tagging features, helping users choose beaches that fit their interests.
 
 
 ### Features
