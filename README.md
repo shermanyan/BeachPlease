@@ -24,9 +24,8 @@ BeachPlease is an Android application that allows users to view and interact wit
 4. Wait for the map to load and you are all set
 
 #### Sample User Login
-Username: mj@gmail.com
+Username: mj@gmail.com<br>
 Password: heehee
-
 
 ## Requirements
 
