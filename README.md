@@ -37,7 +37,7 @@ BeachPlease is an Android application that allows users to view and interact wit
 - **Internet Connection** (required for fetching map, syncing with the Firebase database, and uploading images to Google Cloud Storage)
 - **Google Play Services** (for map display)
 - **Location Data** (to display nearby beaches and enable map-related features)
-- **Android OS Version** (requires Android 12 (API level 35) or newer)
+- **Android OS 12+** (requires Android 12 (API level 35) or newer)
 
 ## Tested Devices
 - **Google Pixel 8 Pro**
