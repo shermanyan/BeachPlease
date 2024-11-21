@@ -60,6 +60,10 @@ dependencies {
     implementation(libs.google.flexbox)
     implementation(libs.lottie)
     implementation(libs.mpandroidchart)
+    implementation(libs.mockito.core)
+    implementation(libs.mockito.inline)
+    implementation(libs.core)
+    implementation(libs.core.testing)
 
     // Add Picasso for image loading
     implementation("com.squareup.picasso:picasso:2.8")

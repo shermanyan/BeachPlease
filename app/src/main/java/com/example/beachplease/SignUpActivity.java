@@ -72,6 +72,9 @@ public class SignUpActivity extends Activity{
 
         boolean canRegister = true;
 
+        // name regex
+        String regex = "^[A-Z][a-z]*$";
+
         // Get info from user input and check for validity
         TextInputLayout firstLayout = findViewById(R.id.firstname);
         TextInputEditText firstLayoutText = (TextInputEditText) firstLayout.getEditText();
@@ -79,8 +82,8 @@ public class SignUpActivity extends Activity{
         if (firstName.isEmpty()) {
             firstLayout.setError("First name is required");
             canRegister = false;
-        } else if (!firstName.matches("^[a-zA-Z]+$")){
-            firstLayout.setError("must contain only letters");
+        } else if (!firstName.matches(regex)){
+            firstLayout.setError("Name must start with an uppercase letter and contain only lowercase letters.");
             canRegister = false;
         } else {
             firstLayout.setError(null);
@@ -93,8 +96,8 @@ public class SignUpActivity extends Activity{
         if (lastName.isEmpty()) {
             lastLayout.setError("Last name is required");
             canRegister = false;
-        } else if (!lastName.matches("^[a-zA-Z]+$")){
-            lastLayout.setError("must contain only letters");
+        } else if (!lastName.matches(regex)){
+            lastLayout.setError("Name must start with an uppercase letter and contain only lowercase letters.");
             canRegister =false;
         } else {
             lastLayout.setError(null);

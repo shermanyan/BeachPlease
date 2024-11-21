@@ -1,104 +1,178 @@
-@startuml
-''https://plantuml.com/sequence-diagram
-'
+@@startuml
+ ' Set the layout to left-to-right for a more horizontal flow
+top to bottom direction
 
+ ' Frame for grouping related classes
+ frame "Beach Module" {
+     class Beach {
+         - String id
+         - String name
+         - double latitude
+         - double longitude
+         - List<String> tags
+         - String description
+         - String formattedAddress
+         - List<String> hours
+         - Map<String, Integer> tagNumber
 
-    class Beach {
-        - String id
-        - String name
-        - double latitude
-        - double longitude
-        - List<String> tags
-        - String description
-        - String formattedAddress
-        - List<String> hours
-        - Map<String, Integer> tagNumber
+         + getName(): String
+         + getLatitude(): float
+         + getLongitude(): float
+         + getTags(): int
+         + getDescription(): String
+         + getFormattedAddress(): float
+         + getHours(): String
+         + getTagNumber(): int
+     }
 
-        + getName(): String
-        + getLatitude(): float
-        + getLongitude(): float
-        + getTags(): int
-        + getDescription(): String
-        + getFormattedAddress(): float
-        + getHours(): String
-        + getTagNumber(): int
+     class Review {
+         - String beachId
+         - String date
+         - String reviewText
+         - float stars
+         - String userId
+         - List<String> imageUrls
+         - String username
+         - String reviewId
+         - User user
+         - Beach beach
+     }
 
-    }
+     class ReviewView {
+         + addReview(Review review): void
+         + loadImages(List<String> image_url, View view): void
+     }
 
-    class User {
-        - String firstName
-        - String lastName
-        - String userName
-        - String email
-        - String id
+     class BeachDetail <<activity>> {
+         - Beach beach
+         - WeatherView weatherview
+         - ReviewView reviewView
+         - OverviewView overviewView
+         - TextView beachTitle
+         - TextView beachRating
+         - RatingBar starRatingBar
+         - TextView numbRatings
+         + retrieveBeachReviews(): void
+         + setTabView(Tab tab): void
+     }
 
-        + getFirstName(): String
-        + getLastName(): String
-        + getUsername(): String
-        + getEmail(): String
-        + addReview(Review): void
-        + editReview(Review): void
-    }
+     class AddReview <<activity>> {
+         - EditText reviewTextInput
+         - RatingBar ratingBar
+         - ArrayList<Uri> imageUris
+         - String userId
+         - String beachId
+         + submitReview()
+         + updateDatabase(float rating, String review, List<String> imageUris)
+         + openImagePicker()
+         + loadImages(List<Uri> imgUris, View view)
+         + uploadImages(ImageUri image): void
+     }
+ }
 
-    class Review {
-        - String beachId
-        - String date
-        - String reviewText
-        - float stars
-        - String userId
-        - List<String> imageUrls
-        - String username
-        - String reviewId
-        - User user
-        - Beach beach
+ frame "User Module" {
+     class User {
+         - String firstName
+         - String lastName
+         - String userName
+         - String email
+         - String id
+         + getFirstName(): String
+         + getLastName(): String
+         + getUsername(): String
+         + getEmail(): String
+     }
 
-        + getBeachId(): String
-        + getDate(): Date
-        + getReviewText(): String
-        + getStars(): Float
-        + getUserId(): String
-        + getImageUrl(): String
-        + getUsername(): String
-        + getReviewId(): String
-    }
+     class UserProfile <<activity>> {
+         - ImageView image
+         - User user
+         - String username
+         - TextView fullNameView
+         - String fullName
+         - TextView emailView
+         - String email
+         + viewReviews(): void
+         + editProfile(): void
+         + logout(): void
+     }
 
-    class Map{
+     class SignUp <<activity>> {
+         - String firstName
+         - String lastName
+         - String userName
+         - String email
+         - String password
+         - String confirmPassword
+         - User user
+         + isValidEmail(String email): boolean
+         + validateUser(): void
+         + setupUserInfo(String userId): void
+         + storeUserInfoInDatabase(User user): void
+         + openMapActivity(): void
+     }
+ }
 
-        - List<Beach> beaches
-        - Set<String> Tags
-        - GoogleMap mMap
-        - Pair<Float, Float> <Longitude, Latitude> coordinates
-        - Float LatLngBounds CALIFORNIA_BOUNDS
+ frame "Map and Weather Modules" {
+     class Map <<activity>> {
+         - List<Beach> beaches
+         - Set<String> Tags
+         - GoogleMap Map
+         - Pair<Float, Float> coordinates
+         - Float LatLngBounds CALIFORNIA_BOUNDS
+         + clickOnBeachMarker(BeachMarker beachmarker): void
+         + initializeBeaches(): void
+         + displayNearestBeaches(int count): void
+         + distanceFrom(LatLng start, LatLng end): double
+         + displayBeaches(List<Beach> beachesToDisplay): void
+         + adjustMapZoom(List<Beach> beaches): void
+         + setupTagButtons(List<String> tags): void
+         + filterBeachesByTags(): void
+     }
 
-        + initializeBeaches(): void
-        + displayNearestBeaches(int count): void
-        + distanceFrom(LatLng start, LatLng end): double
-        + displayBeaches(List<Beach> beachesToDisplay): void
-        + adjustMapZoom(List<Beach> beaches): void
-        + setupTagButtons(List<String> tags): void
-        + filterBeachesByTags(): void
-    }
+     enum WeatherData {
+         - double waveHeight
+         - Integer weatherCode
+         - Integer high
+         - Integer low
+         - Integer precipitation
+         - Integer uvIndex
+         - String sunset
+         - String description
+         - Date date
+     }
 
-    enum WeatherData {
-        - double wave_height
-        - Integer weatherCode
-        - Integer high
-        - Integer low
-        - Integer precipitation
-        - Integer uvIndex
-        - String sunset
-        - String description
-        - Date date
+     class Forecast {
+         - TextView weatherDay
+         - TextView weatherHigh
+         - TextView weatherLow
+         - WeatherData weatherdata
+     }
 
-        + getCurrentWeather(): void
-        + getForecastWeather(): void
-    }
+     class WeatherView {
+         - WeatherData weatherdata
+         - TextView temperature
+         - TextView waveHeight
+         - Chart<List> charts
+         - TextView currentData
+         + getCurrentWeather(): void
+         + getForecastWeather(): void
+     }
+ }
 
+ ' Relationships and Associations
+ Map o-- Beach
+ User o-- Beach
+ Beach o-- WeatherData
+ Beach o-- Review
 
+ WeatherView *-- Forecast
+ WeatherView *-- WeatherData
+ ReviewView *-- Review
 
-Map o-- Beach
-User o-- Beach
-Beach o-- WeatherData
-Beach o-- Review
+ SignUp --> Map
+ Beach o-- BeachDetail
+ User --> SignUp
+ Map --> UserProfile
+ BeachDetail --> AddReview
 
-@enduml
+ @enduml
