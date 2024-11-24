@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
     public void login(View view) {
         TextInputLayout emailLayout = findViewById(R.id.loginemail);
         TextInputEditText emailLayoutText = (TextInputEditText) emailLayout.getEditText();

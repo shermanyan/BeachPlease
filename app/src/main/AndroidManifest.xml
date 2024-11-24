@@ -34,9 +34,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".SignUpActivity"
+            android:exported="true" />
 
-        <activity android:name=".LoginActivity" />
+
+        <activity android:name=".LoginActivity"
+            android:exported="true"/>
 
         <activity android:name=".MainActivity" android:exported="true" />
 <!--        <activity android:name=".MapActivity" />-->
