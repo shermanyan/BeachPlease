@@ -48,6 +48,7 @@ espressoIntents = "3.6.1"
 uiautomator = "2.3.0"
 
 [libraries]
+
 bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
 bte-buddy = { module = "net.bytebuddy:bte-buddy", version.ref = "bteBuddy" }
 byte-buddy = { module = "net.bytebuddy:byte-buddy", version.ref = "bteBuddy" }
@@ -89,7 +90,7 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 play-services-location-v2101 = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 play-services-maps-v1802 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
-robolectric = { module = "rg.robolectric:robolectric", version.ref = "robolectric" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 rules = { module = "androidx.test:rules", version.ref = "rules" }
 runner = { module = "androidx.test:runner", version.ref = "runner" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }

@@ -93,7 +93,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private LatLng sampleLocation; //Fabricated user location
 
     //CA boundaries for zoom function
-    private static final LatLngBounds CALIFORNIA_BOUNDS = new LatLngBounds(
+    public static final LatLngBounds CALIFORNIA_BOUNDS = new LatLngBounds(
             new LatLng(32.5343, -124.4096), //Southwest corner
             new LatLng(42.0095, -114.1312)  //Northeast corner
     );
@@ -125,10 +125,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         //Tag bar layout
         tagLayout = findViewById(R.id.tagLayout);
-        setupTagButtons(Arrays.asList("swimming", "sunbathing", "surfing", "picnicking", "fishing", "hiking",
+        setupTagButtons(Arrays.asList("swimming", "sunbathing", "rock climbing", "surfing", "picnicking", "fishing", "hiking",
                 "boating", "snorkeling", "kayaking", "wildlife watching", "picnic area",
                 "bbq pits", "playground", "camping", "beach volleyball", "windsurfing",
-                "rock climbing", "diving", "bird watching", "dog friendly"));
+                 "diving", "bird watching", "dog friendly"));
 
         //Request permission runtime
         requestLocationPermission();
@@ -168,6 +168,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
 //        displayNearestBeaches(5);
+    }
+
+    public GoogleMap getGoogleMap() {
+        return mMap;
     }
 
     private void checkLocationSettings() {
@@ -345,7 +349,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return results[0];
     }
 
-    private void displayBeaches(List<Beach> beachesToDisplay) {
+    public void displayBeaches(List<Beach> beachesToDisplay) {
         mMap.clear();
         //Force refresh
         Marker dummyMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)));
@@ -429,7 +433,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     //Tag filter functionality
-    private void filterBeachesByTags() {
+    public void filterBeachesByTags() {
         mMap.clear();
 
         if (selectedTags.isEmpty()) {
@@ -439,7 +443,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         List<Beach> filteredBeaches = new ArrayList<>();
         for (Beach beach : beaches) {
-            if (beach.getTags().containsAll(selectedTags)) {
+            if (beach.getTags() != null && beach.getTags().containsAll(selectedTags)) {
                 filteredBeaches.add(beach);
             }
         }
@@ -459,4 +463,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             adjustMapZoom(filteredBeaches.size() > 5 ? filteredBeaches.subList(0, 5) : filteredBeaches);
         }
     }
+
+    public void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public Set<String> getSelectedTags() {
+        return selectedTags;
+    }
+
+    public LatLngBounds getCurrentMapBounds() {
+        if (mMap != null) {
+            return mMap.getProjection().getVisibleRegion().latLngBounds;
+        }
+        return null; // Handle cases where googleMap is not initialized
+    }
+
 }

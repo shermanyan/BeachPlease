@@ -87,6 +87,8 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.core.testing)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.robolectric)
 
 // Instrumented test dependencies
     androidTestImplementation(libs.ext.junit)
