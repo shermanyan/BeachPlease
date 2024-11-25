@@ -82,7 +82,7 @@ public class AddReviewActivity extends AppCompatActivity {
         findViewById(R.id.review_cancel_button).setOnClickListener(v -> finish());
     }
 
-    private void submitReview() {
+    protected void submitReview() {     // private -> protected for testing
         String reviewText = reviewTextInput.getText().toString().trim();
         float rating = ratingBar.getRating();
 
@@ -108,7 +108,7 @@ public class AddReviewActivity extends AppCompatActivity {
         });
     }
 
-    private void updateDatabase(float rating, String reviewText, List<String> imageUrls) {
+    protected void updateDatabase(float rating, String reviewText, List<String> imageUrls) {  // private -> protected for testing
         String date = new SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(new Date());
         String reviewId = reference.push().getKey();
         Review review = new Review(beachId, date, reviewText, rating, userId);
@@ -189,7 +189,7 @@ public class AddReviewActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImages(ImageUploadCallback callback) {
+    protected void uploadImages(ImageUploadCallback callback) {  // private -> protected for testing
         executor.execute(() -> {
             List<String> imageUrls = new ArrayList<>();
             try {
@@ -224,9 +224,14 @@ public class AddReviewActivity extends AppCompatActivity {
     }
 
     // Callback interface for image upload completion
-    private interface ImageUploadCallback {
+    protected interface ImageUploadCallback {  // private -> protected for testing
         void onUploadComplete(List<String> imgUrls);
         void onUploadFailed(String errorMessage);
+    }
+
+    // Used for unit testing
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
 

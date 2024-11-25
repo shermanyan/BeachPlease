@@ -81,6 +81,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Set<String> selectedTags = new HashSet<>();
     private TextView loadingText;
 
+    // Create a list to store all markers for testing
+    private List<Marker> markers= new ArrayList<>();
+
     private static final LatLng USC_LOCATION = new LatLng(34.0224, -118.2851);
 
     private LinearLayout tagLayout;
@@ -354,9 +357,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         .position(new LatLng(beach.getLatitude(), beach.getLongitude()))
                         .title(beach.getName()));
                 marker.setTag(beach);
+                markers.add(marker);
             }
             mMap.setOnMarkerClickListener(this::onMarkerClick);
         }, 100);
+
     }
 
     //Adjust zoom based on nearest beaches
@@ -376,12 +381,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     //Beach onclick
-    private boolean onMarkerClick(Marker marker) {
+    protected boolean onMarkerClick(Marker marker) { // private -> protected for testing
         Beach selectedBeach = (Beach) marker.getTag();
         Intent intent = new Intent(MapActivity.this, BeachDetailActivity.class);
         intent.putExtra("beach", selectedBeach);
         startActivity(intent);
         return true;
+    }
+
+    //Beach Markers list
+    public List<Marker> getMarkersList() {
+        return markers;
     }
 
     //Tag bar buttons
