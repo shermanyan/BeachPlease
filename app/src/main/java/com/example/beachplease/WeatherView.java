@@ -169,20 +169,20 @@ public class WeatherView extends LinearLayout {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
-    private WeatherData displayed_weatherData;
+    WeatherData displayed_weatherData;
 
     private TextView temperatureTab;
     private TextView waveHeightTab;
-    private LineChart tempChart;
-    private LineChart waveChart;
+    LineChart tempChart;
+    LineChart waveChart;
 
     private LottieAnimationView weatherIcon;
-    private TextView currentTemperature;
+    TextView currentTemperature;
     private TextView currentWeatherDescription;
-    private TextView waveHeightText;
-    private TextView precipitationText;
-    private TextView uvIndexText;
-    private TextView sunsetTimeText;
+    TextView waveHeightText;
+    TextView precipitationText;
+    TextView uvIndexText;
+    TextView sunsetTimeText;
     private TextView dayOfWeekText;
 
     private final Beach beach;
@@ -252,7 +252,7 @@ public class WeatherView extends LinearLayout {
 
     }
 
-    private void updateView() {
+    void updateView() {
         updateView(false);
     }
 
@@ -275,7 +275,7 @@ public class WeatherView extends LinearLayout {
 
     }
 
-    private void switchTabs(View view) {
+    void switchTabs(View view) {
         Tab tab;
         if (view.getId() == R.id.tab_temperature) {
             tab = Tab.TEMPERATURE;
