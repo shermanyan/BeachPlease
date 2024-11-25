@@ -57,6 +57,8 @@ android {
 
 }
 
+dependencies {
+
 
     // Core app dependencies
     implementation(libs.appcompat)
