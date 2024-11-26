@@ -99,10 +99,9 @@ dependencies {
     androidTestImplementation(libs.core.testing)
     androidTestImplementation(libs.espresso.contrib)
     androidTestImplementation(libs.uiautomator)
-//    androidTestImplementation(libs.mockito.android)
-    androidTestImplementation(libs.byte.buddy) // Correct Byte Buddy version
+    androidTestImplementation(libs.byte.buddy)
 
-    androidTestImplementation(libs.mockito.android.v5142) // Correct version
+    androidTestImplementation(libs.mockito.android.v5142) 
 
 
     configurations.all {
