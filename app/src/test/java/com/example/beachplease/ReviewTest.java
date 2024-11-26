@@ -34,7 +34,7 @@ public class ReviewTest {
     }
 
     @Test
-    public void testReadFromParcel() {
+    public void testReviewParcel() {
         // Simulate the behavior of the Parcel when reading values
         when(mockParcel.readString()).thenReturn(testReview.getBeachId())
                 .thenReturn(testReview.getDate())

@@ -39,7 +39,7 @@ public class BeachTest {
     }
 
     @Test
-    public void testWriteToParcel() {
+    public void testBeachParcel() {
         // Use doNothing() for void methods
         doNothing().when(mockParcel).writeString(testBeach.getId());
         doNothing().when(mockParcel).writeString(testBeach.getName());
