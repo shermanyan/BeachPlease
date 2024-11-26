@@ -5,29 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.widget.EditText;
-import android.widget.RatingBar;
-import android.widget.Toast;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-
-import static org.mockito.Mockito.*;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
-import java.util.List;
-
-public class ExampleUnitTest {
+public class SignUpValidationTests {
 
     private SignUpActivity signUpActivity;
 
