@@ -3,8 +3,10 @@ package com.example.beachplease;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +39,8 @@ public class OverviewView extends LinearLayout {
     private TextView moreButton;
     private boolean showAllTags = false;
 
+    private ImageView beachImage;
+
 
     public OverviewView(Context context, Beach beach) {
         super(context);
@@ -50,6 +55,7 @@ public class OverviewView extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.overview_view, this, true);
         tagContainer = findViewById(R.id.tag_container);
         moreButton = findViewById(R.id.more_button);
+        beachImage = findViewById(R.id.beach_image);
 
         //reference to the beach tagNumber in database
         beachRef = FirebaseDatabase.getInstance().getReference("beaches").child(beach.getId());
@@ -61,6 +67,28 @@ public class OverviewView extends LinearLayout {
 
         ((TextView) findViewById(R.id.beach_address)).setText(beach.getFormattedAddress());
         ((TextView) findViewById(R.id.beach_description)).setText(beach.getDescription());
+
+        // Fetch the image URL from the database
+        beachRef.child("url").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Get the image URL from the database
+                    String imageUrl = dataSnapshot.getValue(String.class);
+
+                    ImageView imageView = findViewById(R.id.beach_image);
+                    Picasso.get()
+                            .load(imageUrl)
+                            .into(imageView);
+                } else {
+                    Log.e("Firebase", "URL not found");
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Firebase", "Database error: " + databaseError.getMessage());
+            }
+        });
 
         // Set hours
         List<String> hours = beach.getHours();
