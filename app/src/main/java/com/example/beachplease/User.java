@@ -17,7 +17,7 @@ public class User {
         this.userName = userName;
         this.email = email;
         this.id = id;
-        this.profilePictureUrl = "drawable/profile_pic/default_profile_icon"; // set default profile picture
+        this.profilePictureUrl = "drawable/profile_pic/default_profile_icon";
     }
 
 

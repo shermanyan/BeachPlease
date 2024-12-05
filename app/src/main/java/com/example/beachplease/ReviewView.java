@@ -11,13 +11,26 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
 public class  ReviewView extends LinearLayout {
 
     private static final int MAX_LINES_COLLAPSED = 4;
+    private FirebaseDatabase root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");;
+    private DatabaseReference reference = root.getReference("users");
 
     public ReviewView(Context context) {
         super(context);
@@ -76,11 +89,35 @@ public class  ReviewView extends LinearLayout {
             });
         }
         // Initialize views in the review item
+        ImageView reviewProfilePicture = reviewItem.findViewById(R.id.review_profile_picture);
         TextView reviewUsername = reviewItem.findViewById(R.id.review_username);
         TextView reviewDate = reviewItem.findViewById(R.id.review_date);
         TextView reviewTextView = reviewItem.findViewById(R.id.review_text);
         RatingBar reviewStarRatingBar = reviewItem.findViewById(R.id.review_star_rating_bar);
         TextView seeMoreText = reviewItem.findViewById(R.id.see_more);
+
+        // Display profile picture of reviewer making a review
+
+        reference.child(review.getUserId()).child("profilePictureUrl").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String profilePicUrl = snapshot.getValue(String.class);
+
+                    Glide.with(ReviewView.this)
+                            .load(profilePicUrl)
+                            .apply(new RequestOptions().circleCrop())
+                            .placeholder(R.drawable.profile_pic)
+                            .error(R.drawable.profile_pic)
+                            .into(reviewProfilePicture);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         // Set the review data
         reviewUsername.setText(String.valueOf(review.getUsername()));

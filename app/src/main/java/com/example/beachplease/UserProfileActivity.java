@@ -97,21 +97,6 @@ public class UserProfileActivity extends AppCompatActivity {
         fullNameView.setText(fullname);
         emailView.setText(email);
 
-//        // Display user's profile picture
-//        String profilePictureUrl = currentUser.getProfilePictureUrl();
-//        if (profilePictureUrl == null || profilePictureUrl.isEmpty()){
-//
-//            Glide.with(this)
-//                    .load(R.drawable.profile_pic)
-////                    .apply(new RequestOptions().circleCrop())
-//                    .into(userImage);
-//        }else{
-//            Glide.with(this)
-//                    .load(profilePictureUrl)
-//                    .apply(new RequestOptions().circleCrop())
-//                    .into(userImage);
-//        }
-
         getUserProfileImageUrl();
         // Set click listeners
         findViewById(R.id.lockIcon).setOnClickListener(this::showLogoutConfirmation);
