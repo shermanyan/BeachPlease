@@ -82,6 +82,9 @@ dependencies {
     implementation(libs.core)
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.google.cloud:google-cloud-storage:2.3.0")
+    implementation(libs.glide.v4150)
+    implementation(libs.firebase.storage)
+
 
 // Unit test dependencies
     testImplementation(libs.junit)

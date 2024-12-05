@@ -304,6 +304,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             ? snapshot.child("description").getValue(String.class)
                             : "";
 
+
                     Beach beach = new Beach(id, name, latitude, longitude, tags, description, formattedAddress, hours, tagNumber);
                     beaches.add(beach);
 

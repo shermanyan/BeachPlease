@@ -14,6 +14,7 @@ firebaseBom = "33.5.1"
 flexbox = "3.0.0"
 flexboxVersion = "3.0.0"
 glide = "4.16.0"
+glideVersion = "4.15.0"
 googleid = "1.1.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -46,6 +47,7 @@ playServicesFitness = "21.2.0"
 roomCompiler = "2.6.1"
 espressoIntents = "3.6.1"
 uiautomator = "2.3.0"
+firebaseStorage = "21.0.1"
 
 [libraries]
 
@@ -66,6 +68,7 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 flexbox = { module = "com.google.android:flexbox", version.ref = "flexbox" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-v4150 = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 google-flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexboxVersion" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
@@ -100,6 +103,7 @@ play-services-fitness = { group = "com.google.android.gms", name = "play-service
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
 uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

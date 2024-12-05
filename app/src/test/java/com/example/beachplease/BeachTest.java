@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,8 @@ public class BeachTest {
         MockitoAnnotations.initMocks(this);
 
         // Setup a test Beach object with dummy data
-        List<String> tags = Arrays.asList("sandy", "beautiful", "family-friendly");
-        List<String> hours = Arrays.asList("8:00 AM - 6:00 PM", "9:00 AM - 5:00 PM");
+        List<String> tags = new ArrayList<>(Arrays.asList("sandy", "beautiful", "family-friendly"));
+        List<String> hours = new ArrayList<>(Arrays.asList("8:00 AM - 6:00 PM", "9:00 AM - 5:00 PM"));
         Map<String, Integer> tagNumber = new HashMap<>();
         tagNumber.put("sandy", 5);
         tagNumber.put("beautiful", 8);

@@ -6,6 +6,7 @@ public class User {
     private String userName;
     private String email;
     private String id;
+    private String profilePictureUrl;
 
     // default Constructor
     public User() {}
@@ -16,7 +17,9 @@ public class User {
         this.userName = userName;
         this.email = email;
         this.id = id;
+        this.profilePictureUrl = "drawable/profile_pic/default_profile_icon"; // set default profile picture
     }
+
 
     // Getters and Setters
     public String getFirstName() { return firstName; }
@@ -38,4 +41,9 @@ public class User {
     public String getId() { return id;}
 
     public void setId(String id) { this.id = id; }
+
+    public String getProfilePictureUrl() { return profilePictureUrl; }
+
+    public void setProfilePictureUrl(String profilePictureUrl) { this.profilePictureUrl = profilePictureUrl; }
+
 }

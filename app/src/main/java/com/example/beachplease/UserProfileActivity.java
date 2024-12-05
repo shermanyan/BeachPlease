@@ -10,7 +10,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class UserProfileActivity extends AppCompatActivity {
     private View darkerBackground;
@@ -20,6 +31,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private LinearLayout logoutConfirmation;
 
     private User currentUser;
+    private FirebaseAuth mAuth;
 
     private TextView profileNameView;
     private String profileName;
@@ -30,6 +42,11 @@ public class UserProfileActivity extends AppCompatActivity {
     private String email;
 
     private String userId;
+    private String userProfilePicUrl;
+
+    private DatabaseReference reference;
+    private FirebaseDatabase root;
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -37,6 +54,10 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
+
+        mAuth = FirebaseAuth.getInstance();
+        root = FirebaseDatabase.getInstance("https://beachplease-439517-default-rtdb.firebaseio.com/");
+        reference = root.getReference("users");
 
         darkerBackground = findViewById(R.id.darkOverlay);
 
@@ -64,6 +85,8 @@ public class UserProfileActivity extends AppCompatActivity {
         emailView = findViewById(R.id.profileEmail);
 
         // Retrieve and Display user's info
+
+
         profileName = currentUser.getUserName();
         String fn = currentUser.getFirstName();
         String ln = currentUser.getLastName();
@@ -74,6 +97,22 @@ public class UserProfileActivity extends AppCompatActivity {
         fullNameView.setText(fullname);
         emailView.setText(email);
 
+//        // Display user's profile picture
+//        String profilePictureUrl = currentUser.getProfilePictureUrl();
+//        if (profilePictureUrl == null || profilePictureUrl.isEmpty()){
+//
+//            Glide.with(this)
+//                    .load(R.drawable.profile_pic)
+////                    .apply(new RequestOptions().circleCrop())
+//                    .into(userImage);
+//        }else{
+//            Glide.with(this)
+//                    .load(profilePictureUrl)
+//                    .apply(new RequestOptions().circleCrop())
+//                    .into(userImage);
+//        }
+
+        getUserProfileImageUrl();
         // Set click listeners
         findViewById(R.id.lockIcon).setOnClickListener(this::showLogoutConfirmation);
         findViewById(R.id.location).setOnClickListener(this::backToMap);
@@ -116,6 +155,31 @@ public class UserProfileActivity extends AppCompatActivity {
 
         startActivity(intent);
 
+    }
+
+    private String getUserProfileImageUrl() {
+        reference.child(mAuth.getCurrentUser().getUid()).child("profilePictureUrl").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String imageUrl = snapshot.getValue(String.class);
+
+                    Glide.with(UserProfileActivity.this)
+                            .load(imageUrl)
+                            .apply(new RequestOptions().circleCrop())
+                            .placeholder(R.drawable.profile_pic)
+                            .error(R.drawable.profile_pic)
+                            .into(userImage);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return null;
     }
 
     private void showLogoutConfirmation(View view) {

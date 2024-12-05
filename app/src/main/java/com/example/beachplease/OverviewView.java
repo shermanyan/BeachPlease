@@ -89,7 +89,6 @@ public class OverviewView extends LinearLayout {
                 Log.e("Firebase", "Database error: " + databaseError.getMessage());
             }
         });
-
         // Set hours
         List<String> hours = beach.getHours();
         if(hours.size() == 1){
@@ -125,6 +124,7 @@ public class OverviewView extends LinearLayout {
             }
             return false;
         });
+
 
 
     }

@@ -172,6 +172,8 @@ public class SignUpActivity extends Activity{
         }
         user.setEmail(email);
 
+        user.setProfilePictureUrl("");
+
         storeUserInfoInDatabase(user);
 
     }
