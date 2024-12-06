@@ -20,6 +20,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +31,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -386,12 +390,51 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     //Beach onclick
-    protected boolean onMarkerClick(Marker marker) { // private -> protected for testing
+//    protected boolean onMarkerClick(Marker marker) { // private -> protected for testing
+//        Beach selectedBeach = (Beach) marker.getTag();
+//        Intent intent = new Intent(MapActivity.this, BeachDetailActivity.class);
+//        intent.putExtra("beach", selectedBeach);
+//        startActivity(intent);
+//        return true;
+//    }
+
+
+    protected  boolean onMarkerClick(Marker marker){
         Beach selectedBeach = (Beach) marker.getTag();
+
+//         Inflate the custom dialog layout
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.overview_view, new OverviewView(this, selectedBeach));
+
+        TextView dialogBeachName = dialogView.findViewById(R.id.beach_name);
+        View dialogBeachNameDivider = dialogView.findViewById(R.id.beach_name_divider);
+        View dialogNavbar = dialogView.findViewById(R.id.beach_navbar);
+
+        assert selectedBeach != null;
+        dialogBeachName.setText(selectedBeach.getName());
+        dialogBeachName.setVisibility(View.VISIBLE);
+        dialogBeachNameDivider.setVisibility(View.VISIBLE);
+        dialogNavbar.setVisibility(View.VISIBLE);
+
+        // Create and show dialog
+        AlertDialog alert = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("See More", (dialog, which) -> viewBeachDetails(selectedBeach))
+                .setNegativeButton("Go back", (dialog, which) -> dialog.dismiss())
+                .show();
+
+       Window window = alert.getWindow();
+       if (window != null) {
+           window.setLayout(800, 1500);
+       }
+
+       return true;
+
+    }
+
+    private void viewBeachDetails(Beach beach){
         Intent intent = new Intent(MapActivity.this, BeachDetailActivity.class);
-        intent.putExtra("beach", selectedBeach);
+        intent.putExtra("beach", beach);
         startActivity(intent);
-        return true;
     }
 
     //Beach Markers list

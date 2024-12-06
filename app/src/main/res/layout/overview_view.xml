@@ -1,10 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/overview_view"
     android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+<!--    Information to be Displayed during Map Marker Click Popup-->
+<!--    Turned xml file to scrollView to accomodate for content viewing-->
+    <View
+        android:id="@+id/beach_navbar"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/oceanblue"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+    </View>
+
+    <TextView
+        android:id="@+id/beach_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Beach Name"
+        android:textStyle="bold"
+        android:textSize="23sp"
+        android:textColor="@color/dark_gray"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/beach_name_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/gray"
+        android:visibility="gone"/>
+
+
+<!-- End here-->
 
     <ImageView
         android:id="@+id/beach_image"
@@ -352,3 +390,5 @@
     </LinearLayout>
 
 </LinearLayout>
+
+</ScrollView>
