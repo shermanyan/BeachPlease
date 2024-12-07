@@ -1,42 +1,41 @@
 package com.example.beachplease;
 
-import com.google.android.gms.location.Priority;
-import android.content.IntentSender;
-import android.os.Looper;
-import androidx.annotation.Nullable;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-
-import android.util.Log;
-
+import android.Manifest;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.Manifest;
-import android.content.pm.PackageManager;
-import androidx.annotation.NonNull;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,48 +44,32 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-
-import com.google.firebase.Firebase;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import android.widget.TextView;
-import android.view.View;
-import android.os.Handler;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import android.view.ViewTreeObserver;
+import java.util.Set;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private List<Beach> beaches;
-    private Set<String> selectedTags = new HashSet<>();
+    private final Set<String> selectedTags = new HashSet<>();
     private TextView loadingText;
 
     // Create a list to store all markers for testing
-    private List<Marker> markers= new ArrayList<>();
+    private final List<Marker> markers= new ArrayList<>();
 
     private static final LatLng USC_LOCATION = new LatLng(34.0224, -118.2851);
 
@@ -146,7 +129,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
         //Listener to wait for the map layout to be complete
-        final View mapView = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getView();
+        final View mapView = getSupportFragmentManager().findFragmentById(R.id.map).getView();
 
         if (mapView != null) {
             mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -407,13 +390,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         TextView dialogBeachName = dialogView.findViewById(R.id.beach_name);
         View dialogBeachNameDivider = dialogView.findViewById(R.id.beach_name_divider);
-        View dialogNavbar = dialogView.findViewById(R.id.beach_navbar);
+//        View dialogNavbar = dialogView.findViewById(R.id.beach_navbar);
 
         assert selectedBeach != null;
         dialogBeachName.setText(selectedBeach.getName());
         dialogBeachName.setVisibility(View.VISIBLE);
         dialogBeachNameDivider.setVisibility(View.VISIBLE);
-        dialogNavbar.setVisibility(View.VISIBLE);
+//        dialogNavbar.setVisibility(View.VISIBLE);
 
         // Create and show dialog
         AlertDialog alert = new AlertDialog.Builder(this)
@@ -424,7 +407,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
        Window window = alert.getWindow();
        if (window != null) {
-           window.setLayout(800, 1500);
+           window.setLayout(1000, 1500);
+           window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.rounded_box_modal));
        }
 
        return true;
