@@ -21,6 +21,13 @@ import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static org.hamcrest.Matchers.allOf;
+import android.view.View;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
+import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
+
 
 @RunWith(AndroidJUnit4.class)
 public class MarkerClickTest {
@@ -29,6 +36,25 @@ public class MarkerClickTest {
     public ActivityScenarioRule<MapActivity> activityRule =
             new ActivityScenarioRule<>(MapActivity.class);
 
+    // Custom Matcher: withIndex
+    private static class PositionMatcher {
+        public static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
+            return new TypeSafeMatcher<View>() {
+                private int currentIndex = 0;
+
+                @Override
+                public void describeTo(Description description) {
+                    description.appendText("with index: " + index);
+                    matcher.describeTo(description);
+                }
+
+                @Override
+                protected boolean matchesSafely(View view) {
+                    return matcher.matches(view) && currentIndex++ == index;
+                }
+            };
+        }
+    }
     @Test
     public void testClickMarker() throws InterruptedException, UiObjectNotFoundException {
         Thread.sleep(3000); // Wait for map to load
@@ -48,8 +74,14 @@ public class MarkerClickTest {
         onView(withText("sunbathing")).perform(click());
         onView(withContentDescription("Beach title")).check(doesNotExist());
         onView(withId(R.id.map)).perform(click());
-        Thread.sleep(2000);
-        // Verify reaching the beach detail page
-        onView(withContentDescription("Beach title")).check(matches(isDisplayed()));
+        Thread.sleep(3000);
+        onView(PositionMatcher.withIndex(
+                allOf(
+                        withContentDescription("Hour Icon"),
+                        isDescendantOfA(withId(16908290)) // Replace with the correct parent ID
+                ),
+                0)) // Replace 0 with the correct index
+                .check(matches(isDisplayed()));
+//                .perform(click());
     }
 }
