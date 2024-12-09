@@ -14,6 +14,13 @@ BeachPlease is an Android application that allows users to view and interact wit
 - **Beach Reviews**: View, add, edit, and delete reviews, including star ratings, comments, and photos.
 - **Beach Tags**: Users can tag beaches by specific activities (e.g., swimming, sunbathing, surfing), enabling others to filter and find beaches that suit their preferences.
 
+### Improvements (12/8/2024)
+- **Beach Overview Pictures**: Add a picture for each beach in the overview screen. This will provide users with a visual representation of the beach, enhancing the overall aesthetic of the app.
+- **Reviewer Profile Pictures**: Add profile pictures to the reviews for each beach. This will help users identify reviewers and personalize the experience, making it more engaging and trustworthy.
+- **User Profile Picture Management**: Implement functionality that allows users to add and edit their profile pictures. This feature will enhance personalization and provide users with the ability to tailor their accounts to their preferences.
+- **Mini Popup for Beach Markers**: Implement a mini popup view that displays basic information about each beach when users click on a red marker on the map. This will improve user navigation and make it easier to access key details about each location.
+
+
 
 ## Getting Started
 
